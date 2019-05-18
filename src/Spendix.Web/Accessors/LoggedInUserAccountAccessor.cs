@@ -40,5 +40,18 @@ namespace Spendix.Web.Accessors
 
             return loggedInUserAccount;
         }
+
+        public Guid GetLoggedInUserAccountId()
+        {
+            var httpContext = httpContextAccessor.HttpContext;
+            if (httpContext.User.Identity.IsAuthenticated)
+            {
+                var idClaim = httpContext.User.Claims.Single(x => x.Type == "UserAccountId");
+                var userAccountId = Guid.Parse(idClaim.Value);
+                return userAccountId;
+            }
+
+            return Guid.Empty;
+        }
     }
 }

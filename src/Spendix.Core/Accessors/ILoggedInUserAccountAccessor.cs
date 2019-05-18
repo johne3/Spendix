@@ -8,5 +8,7 @@ namespace Spendix.Core.Accessors
     public interface ILoggedInUserAccountAccessor
     {
         UserAccount GetLoggedInUserAccount();
+
+        Guid GetLoggedInUserAccountId();
     }
 }

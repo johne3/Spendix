@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Spendix.Core.Accessors;
 using Spendix.Core.Entities;
 using System;
 using System.Collections.Generic;
@@ -12,10 +13,12 @@ namespace Spendix.Core.Repos
     public abstract class EntityRepo<TEntity> where TEntity : Entity
     {
         protected readonly SpendixDbContext DataContext;
+        private readonly ILoggedInUserAccountAccessor loggedInUserAccountAccessor;
 
-        public EntityRepo(SpendixDbContext spendixDbContext)
+        public EntityRepo(SpendixDbContext spendixDbContext, ILoggedInUserAccountAccessor loggedInUserAccountAccessor)
         {
             DataContext = spendixDbContext;
+            this.loggedInUserAccountAccessor = loggedInUserAccountAccessor;
         }
 
         public Task<List<TEntity>> FndAllAsync()
@@ -80,13 +83,15 @@ namespace Spendix.Core.Repos
 
             var dbEntity = DataContext.Entry(entity);
 
-            //TODO: Update user account ids
+            var userAccountId = loggedInUserAccountAccessor.GetLoggedInUserAccountId();
 
             entity.ModifyDateUtc = DateTime.UtcNow;
+            entity.ModifyUserAccountId = userAccountId;
 
             if (dbEntity.State == EntityState.Detached)
             {
                 entity.CreateDateUtc = DateTime.UtcNow;
+                entity.CreateUserAccountId = userAccountId;
                 DataContext.Update(entity);
             }
             else
