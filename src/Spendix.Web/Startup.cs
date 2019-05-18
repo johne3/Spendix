@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Spendix.Core;
 using Spendix.Core.Extensions;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Spendix.Web
 {
@@ -31,6 +32,12 @@ namespace Spendix.Web
             services.AddDataAccess(Configuration);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Account/SignIn";
+                });
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -47,9 +54,13 @@ namespace Spendix.Web
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseCookiePolicy();
 
-            //app.UseAuthentication();
+            app.UseCookiePolicy(new CookiePolicyOptions
+            {
+                MinimumSameSitePolicy = SameSiteMode.Strict,
+            });
+
+            app.UseAuthentication();
 
             app.UseMvc();
         }
