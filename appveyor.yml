@@ -2,7 +2,7 @@
   branches:
     only:
       - master
-  configuration: [Debug]
+  configuration: [Release]
   os: Visual Studio 2017
   version: 1.0.0-{branch}-{build}
   install:
@@ -34,10 +34,10 @@
     # Web Deploy deployment provider settings
     - provider: WebDeploy
       server:  https://spendix.scm.azurewebsites.net:443/msdeploy.axd?site=spendix
-      website: Spendix
-      username: $Spendix
+      website: spendix
+      username: $spendix
       password:
-        secure: fo4YnuepmQOxEi9zGotsGyV0hmn273Z+/UAfjPwaTveL5RxUGIfkDElX1j9+lXjRm3CYgj6Ikj0nLAq3lppV6Q==
+        secure: UpBbc6DP0uwnq6iXoo5jrFdSKFPEQnNFy55aEy/X/ofgPjat1aA9OXuHbM4dIu9764izDvmkyuIxeHtJgD/2UA==
       ntlm: false
       remove_files: false
       app_offline: true
