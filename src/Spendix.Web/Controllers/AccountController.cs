@@ -41,6 +41,42 @@ namespace Spendix.Web.Controllers
         }
 
         [AllowAnonymous]
+        [HttpPost, Route("SignIn")]
+        public async Task<IActionResult> SignIn(IFormCollection values)
+        {
+            var emailAddress = values["emailAddress"];
+            var password = values["password"];
+
+            var userAccount = await userAccountRepo.FindByEmailAddress(emailAddress);
+
+            if (userAccount == null)
+            {
+                return SetAlertMessageAndRedirect("SignIn", "Account", "Invalid Email Address or Password", Models.AlertMessageType.Error);
+            }
+
+            if (!BCrypt.Net.BCrypt.Verify(password, userAccount.Password))
+            {
+                return SetAlertMessageAndRedirect("SignIn", "Account", "Invalid Email Address or Password", Models.AlertMessageType.Error);
+            }
+
+            await SignInUserAccount(userAccount);
+
+            if (!string.IsNullOrEmpty(values["returnUrl"]))
+            {
+                return Redirect(values["returnUrl"]);
+            }
+
+            return RedirectToAction("Dashboard", "Home");
+        }
+
+        [HttpGet, Route("SignOut")]
+        public async Task<IActionResult> SignOut()
+        {
+            await HttpContext.SignOutAsync();
+            return RedirectToAction("SignIn", "Account");
+        }
+
+        [AllowAnonymous]
         [HttpGet, Route("SignUp")]
         public IActionResult SignUp()
         {
