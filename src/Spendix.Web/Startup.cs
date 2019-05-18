@@ -12,6 +12,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Spendix.Core;
+using Spendix.Core.Extensions;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Spendix.Core.Accessors;
+using Spendix.Web.Accessors;
 
 namespace Spendix.Web
 {
@@ -26,11 +31,19 @@ namespace Spendix.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddDbContext<ApplicationDbContext>(options =>
-            //    options.UseSqlServer(
-            //        Configuration.GetConnectionString("DefaultConnection")));
+            services.AddScoped<ILoggedInUserAccountAccessor, LoggedInUserAccountAccessor>();
+
+            services.AddDataAccess(Configuration);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddHttpContextAccessor();
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Account/SignIn";
+                });
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -47,9 +60,13 @@ namespace Spendix.Web
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseCookiePolicy();
 
-            //app.UseAuthentication();
+            app.UseCookiePolicy(new CookiePolicyOptions
+            {
+                MinimumSameSitePolicy = SameSiteMode.Strict,
+            });
+
+            app.UseAuthentication();
 
             app.UseMvc();
         }

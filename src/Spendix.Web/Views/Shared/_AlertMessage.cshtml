@@ -1,0 +1,53 @@
+﻿@{
+    var showAlert = false;
+    var alertMessageType = Spendix.Web.Models.AlertMessageType.Success;
+    var alertMessageClass = String.Empty;
+    var alertMessage = string.Empty;
+    var alertSubMessage = string.Empty;
+
+
+    if (TempData["AlertMessageType"] != null && TempData["AlertMessage"] != null && !string.IsNullOrEmpty(TempData["AlertMessage"].ToString()))
+    {
+        showAlert = true;
+        alertMessageType = Enum.Parse<Spendix.Web.Models.AlertMessageType>(TempData["AlertMessageType"].ToString());
+
+        if (alertMessageType == Spendix.Web.Models.AlertMessageType.Success)
+        {
+            alertMessageClass = "alert-success";
+        }
+        else if (alertMessageType == Spendix.Web.Models.AlertMessageType.Info)
+        {
+            alertMessageClass = "alert-info";
+        }
+        else if (alertMessageType == Spendix.Web.Models.AlertMessageType.Warning)
+        {
+            alertMessageClass = "alert-warning";
+        }
+        else if (alertMessageType == Spendix.Web.Models.AlertMessageType.Error)
+        {
+            alertMessageClass = "alert-danger";
+        }
+
+        alertMessage = TempData["AlertMessage"].ToString();
+
+        if (TempData["AlertSubMessage"] != null)
+        {
+            alertSubMessage = TempData["AlertSubMessage"].ToString();
+        }
+    }
+}
+
+@if (showAlert)
+{
+    <div class="alert @alertMessageClass" role="alert">
+        <strong>@alertMessage</strong>
+        @if (!string.IsNullOrEmpty(alertSubMessage))
+        {
+            <p>@alertSubMessage</p>
+        }
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
