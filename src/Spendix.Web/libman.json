@@ -29,6 +29,17 @@
         "jquery.validate.js",
         "jquery.validate.min.js"
       ]
+    },
+    {
+      "library": "font-awesome@5.8.2",
+      "destination": "wwwroot/lib/font-awesome/",
+      "files": [
+        "css/all.min.css",
+        "css/all.css",
+        "webfonts/fa-solid-900.woff",
+        "webfonts/fa-solid-900.woff2",
+        "webfonts/fa-solid-900.ttf"
+      ]
     }
   ]
 }
