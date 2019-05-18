@@ -13,12 +13,10 @@ namespace Spendix.Core.Repos
     public abstract class EntityRepo<TEntity> where TEntity : Entity
     {
         protected readonly SpendixDbContext DataContext;
-        private readonly ILoggedInUserAccountAccessor loggedInUserAccountAccessor;
 
-        public EntityRepo(SpendixDbContext spendixDbContext, ILoggedInUserAccountAccessor loggedInUserAccountAccessor)
+        public EntityRepo(SpendixDbContext spendixDbContext)
         {
             DataContext = spendixDbContext;
-            this.loggedInUserAccountAccessor = loggedInUserAccountAccessor;
         }
 
         public Task<List<TEntity>> FndAllAsync()
@@ -83,20 +81,17 @@ namespace Spendix.Core.Repos
 
             var dbEntity = DataContext.Entry(entity);
 
-            var userAccountId = loggedInUserAccountAccessor.GetLoggedInUserAccountId();
+            //TODO: Fix this, currently we have a circular dependency
+            //var userAccountId = loggedInUserAccountAccessor.GetLoggedInUserAccountId();
 
             entity.ModifyDateUtc = DateTime.UtcNow;
-            entity.ModifyUserAccountId = userAccountId;
+            //entity.ModifyUserAccountId = userAccountId;
 
             if (dbEntity.State == EntityState.Detached)
             {
                 entity.CreateDateUtc = DateTime.UtcNow;
-                entity.CreateUserAccountId = userAccountId;
+                //entity.CreateUserAccountId = userAccountId;
                 DataContext.Update(entity);
-            }
-            else
-            {
-                // Entity is already attached
             }
         }
 
