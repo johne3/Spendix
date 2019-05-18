@@ -9,8 +9,12 @@ using Spendix.Web.ViewModels;
 namespace Spendix.Web.Controllers
 {
     [Route("")]
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
+        public HomeController(IServiceProvider serviceProvider) : base(serviceProvider)
+        {
+        }
+
         [HttpGet, Route("")]
         public IActionResult Dashboard()
         {
