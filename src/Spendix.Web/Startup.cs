@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Spendix.Core;
+using Spendix.Core.Extensions;
 
 namespace Spendix.Web
 {
@@ -26,9 +28,7 @@ namespace Spendix.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddDbContext<ApplicationDbContext>(options =>
-            //    options.UseSqlServer(
-            //        Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDataAccess(Configuration);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
