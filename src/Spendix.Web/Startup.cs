@@ -15,6 +15,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Spendix.Core;
 using Spendix.Core.Extensions;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Spendix.Core.Accessors;
+using Spendix.Web.Accessors;
 
 namespace Spendix.Web
 {
@@ -29,9 +31,13 @@ namespace Spendix.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<ILoggedInUserAccountAccessor, LoggedInUserAccountAccessor>();
+
             services.AddDataAccess(Configuration);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddHttpContextAccessor();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
