@@ -20,8 +20,6 @@ namespace Spendix.Core.EntityConfig
             builder.Property(x => x.UserAccountId).IsRequired().HasDefaultValueSql("newid()");
             builder.Property(x => x.EmailAddress).IsRequired().HasMaxLength(250);
             builder.Property(x => x.Password).IsRequired().HasMaxLength(250);
-            builder.Property(x => x.FirstName).IsRequired().HasMaxLength(50);
-            builder.Property(x => x.LastName).IsRequired().HasMaxLength(50);
         }
     }
 }

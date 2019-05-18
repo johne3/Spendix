@@ -5,3 +5,13 @@
 form.user .btn-user {
     border-radius: unset;
 }
+
+.error {
+    width: 100%;
+}
+
+label.error {
+    font-size: 1rem;
+    color: #D8000C;
+    margin-top: .4rem;
+}
