@@ -12,13 +12,7 @@ namespace Spendix.Web.Controllers
     public class HomeController : Controller
     {
         [HttpGet, Route("")]
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        [HttpGet, Route("Privacy")]
-        public IActionResult Privacy()
+        public IActionResult Dashboard()
         {
             return View();
         }
