@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spendix.Core.Accessors;
 using Microsoft.Extensions.DependencyInjection;
+using Spendix.Core.Repos;
 
 namespace Spendix.Web.Controllers
 {
@@ -14,22 +15,25 @@ namespace Spendix.Web.Controllers
     public class BankAccountApiController : BaseController
     {
         private readonly ILoggedInUserAccountAccessor loggedInUserAccountAccessor;
+        private readonly BankAccountRepo bankAccountRepo;
 
         public BankAccountApiController(IServiceProvider serviceProvider) : base(serviceProvider)
         {
             loggedInUserAccountAccessor = serviceProvider.GetService<ILoggedInUserAccountAccessor>();
+            bankAccountRepo = serviceProvider.GetService<BankAccountRepo>();
         }
 
         [HttpGet, Route("")]
         public async Task<IActionResult> Get()
         {
-            var dummyBankAccounts = new List<dynamic>
-            {
-                new { bankAccountId = Guid.NewGuid(), name = "Checking", detailUrl = $"/BankAccount/{Guid.NewGuid()}" },
-                new { bankAccountId = Guid.NewGuid(), name = "Savings", detailUrl = $"/BankAccount/{Guid.NewGuid()}" }
-            };
+            var bankAccounts = await bankAccountRepo.FindByLoggedInUserAccountAsync();
 
-            return Json(dummyBankAccounts);
+            return Json(bankAccounts.Select(x => new
+            {
+                x.BankAccountId,
+                x.Name,
+                detailUrl = Url.Action("Detail", "BankAccount", new { })
+            }));
         }
     }
 }

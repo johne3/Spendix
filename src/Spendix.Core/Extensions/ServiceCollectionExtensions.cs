@@ -17,6 +17,7 @@ namespace Spendix.Core.Extensions
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
             });
 
+            services.AddScoped<BankAccountRepo>();
             services.AddScoped<UserAccountRepo>();
 
             return services;
