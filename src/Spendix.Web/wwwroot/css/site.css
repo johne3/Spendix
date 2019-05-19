@@ -19,3 +19,7 @@ label.error {
 b, strong {
     font-weight: 600;
 }
+
+.topbar {
+    height: 3.375rem;
+}

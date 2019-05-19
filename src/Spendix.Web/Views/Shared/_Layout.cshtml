@@ -32,7 +32,7 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
+            <li class="nav-item @(controller == "home" && action == "dashboard" ? "active" : "")">
                 <a class="nav-link" asp-controller="Home" asp-action="Dashboard">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span>
@@ -47,37 +47,12 @@
                 Budgeting
             </div>
 
-            @*<!-- Nav Item - Pages Collapse Menu -->
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                        <i class="fas fa-fw fa-cog"></i>
-                        <span>Components</span>
-                    </a>
-                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                        <div class="bg-white py-2 collapse-inner rounded">
-                            <h6 class="collapse-header">Custom Components:</h6>
-                            <a class="collapse-item" href="buttons.html">Buttons</a>
-                            <a class="collapse-item" href="cards.html">Cards</a>
-                        </div>
-                    </div>
-                </li>
-
-                <!-- Nav Item - Utilities Collapse Menu -->
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
-                        <i class="fas fa-fw fa-wrench"></i>
-                        <span>Utilities</span>
-                    </a>
-                    <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-                        <div class="bg-white py-2 collapse-inner rounded">
-                            <h6 class="collapse-header">Custom Utilities:</h6>
-                            <a class="collapse-item" href="utilities-color.html">Colors</a>
-                            <a class="collapse-item" href="utilities-border.html">Borders</a>
-                            <a class="collapse-item" href="utilities-animation.html">Animations</a>
-                            <a class="collapse-item" href="utilities-other.html">Other</a>
-                        </div>
-                    </div>
-                </li>*@
+            <li class="nav-item">
+                <a class="nav-link" href="javascript:void(0)">
+                    <i class="fas fa-fw fa-clipboard-list"></i>
+                    <span>Setup</span>
+                </a>
+            </li>
 
             <!-- Divider -->
             <hr class="sidebar-divider">
@@ -87,12 +62,32 @@
                 Accounts
             </div>
 
+            <li class="nav-item" v-if="loading">
+                <a class="nav-link pt-0" href="javascript:void(0)">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </a>
+            </li>
+
+            <li class="nav-item" v-for="bankAccount in bankAccounts">
+                <a class="nav-link" v-bind:href="bankAccount.detailUrl">
+                    <i class="fas fa-fw fa-dollar-sign"></i>
+                    <span>{{bankAccount.name}}</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="javascript:void(0)">
+                    <i class="fas fa-fw fa-plus"></i>
+                    <span>Add Account</span>
+                </a>
+            </li>
+
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
 
             <!-- Sidebar Toggler (Sidebar) -->
             <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+                <button class="rounded-circle border-0" id="sidebarToggle" v-on:click="toggleSidebar"></button>
             </div>
 
         </ul>
@@ -120,7 +115,6 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">@loggedInUserAccount.EmailAddress</span>
-                                <img class="img-profile rounded-circle" src="https://source.unsplash.com/QAB-WJcbgJk/60x60">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
@@ -166,6 +160,14 @@
         <!-- End of Content Wrapper -->
     </div>
     <partial name="_BaseScripts" />
+    <environment include="Development">
+        <script src="~/lib/vue/vue.js"></script>
+        <script src="~/js/views/shared/layout.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/lib/vue/vue.min.js"></script>
+        <script src="~/js/views/shared/layout.js" asp-append-version="true"></script>
+    </environment>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

@@ -40,6 +40,14 @@
         "webfonts/fa-solid-900.woff2",
         "webfonts/fa-solid-900.ttf"
       ]
+    },
+    {
+      "library": "vue@2.6.10",
+      "destination": "wwwroot/lib/vue/",
+      "files": [
+        "vue.min.js",
+        "vue.js"
+      ]
     }
   ]
 }
