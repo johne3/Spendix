@@ -9,10 +9,6 @@ $(document).ready(function () {
         },
         methods: {
             getBankAccounts() {
-                //Vue.http.get('/api/BankAccounts').then(function (response) {
-                //    this.data = response.data;
-                //});
-
                 fetch('/api/BankAccounts')
                     .then(
                         function (response) {
