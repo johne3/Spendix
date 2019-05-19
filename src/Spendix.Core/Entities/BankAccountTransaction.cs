@@ -20,6 +20,6 @@ namespace Spendix.Core.Entities
 
         public decimal Amount { get; set; }
 
-        //public BankAccountTransactionCategory BankAccountTransactionCategory { get; set; }
+        public BankAccountTransactionCategory BankAccountTransactionCategory { get; set; }
     }
 }
