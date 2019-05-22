@@ -1,0 +1,127 @@
+﻿@model Spendix.Web.ViewModels.BankAccountTransactions.TransactionsViewModel
+@{
+    ViewData["Title"] = Model.BankAccount.Name;
+}
+
+@section Styles {
+}
+
+@section Scripts {
+    <environment include="Development">
+        <script src="~/js/views/bankAccountTransactions/transactions.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/views/bankAccountTransactions/transactions.js"></script>
+    </environment>
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card card-outline-info">
+            <div class="card-body">
+                <h4 class="card-title">Add Transaction</h4>
+                <hr>
+                <form id="transactionForm" asp-controller="BankAccountTransactions" asp-action="SaveTransaction" asp-route-bankAccountId="@Model.BankAccount.BankAccountId">
+                    <input type="hidden" id="BankAccountTransactionId" name="BankAccountTransactionId" value="@Model.SelectedBankAccountTransaction?.BankAccountTransactionId" />
+                    <div class="form-body">
+                        <div class="row p-t-20">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Type</label>
+                                    <select asp-items="@Model.TransactionTypeSelectList" id="TransactionType" name="TransactionType" class="form-control custom-select"></select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Date</label>
+                                    <input type="text" id="Date" name="Date" class="form-control" placeholder="Date" value="@Model.SelectedBankAccountTransaction?.TransactionDate.ToShortDateString()">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Payee</label>
+                                    <input type="text" id="Payee" name="Payee" class="form-control" placeholder="Payee" maxlength="200" value="@Model.SelectedBankAccountTransaction?.Payee">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Category</label>
+                                    <select class="form-control custom-select" id="Category" name="Category"></select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Amount</label>
+                                    <input type="text" id="Amount" name="Amount" class="form-control" placeholder="Amount" value="@Model.SelectedBankAccountTransaction?.Amount.FormatCurrency()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions float-right">
+                        <button type="submit" class="btn btn-primary" id="saveButton"> <i class="fa fa-check"></i> Save</button>
+                        <button type="button" class="btn btn-secondary">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="card mt-4">
+            <div class="card-body">
+                <h4 class="card-title">Transactions</h4>
+                <hr>
+                <div class="table-responsive">
+                    <table id="transactionsTable" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Category</th>
+                                <th>Payee</th>
+                                <th>Amount</th>
+                                <th>Balance</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var transaction in Model.Transactions)
+                            {
+                                var transactionBalance = Model.TransactionBalances.Single(x => x.BankAccountTransactionId == transaction.BankAccountTransactionId);
+                                <tr>
+                                    <td>@transaction.TransactionDate.ToShortDateString()</td>
+                                    <td>@transaction.BankAccountTransactionCategory.Name</td>
+                                    <td>@transaction.Payee</td>
+                                    <td>@transaction.Amount.FormatCurrency()</td>
+                                    <td>
+                                        @if (transactionBalance.CurrentBalance.HasValue)
+                                        {
+                                            <text>@transactionBalance.CurrentBalance.Value.FormatCurrency()</text>
+                                        }
+                                        else
+                                        {
+                                            <text>@((Model.BankAccount.OpeningBalance + transaction.Amount).FormatCurrency())</text>
+                                        }
+                                    </td>
+                                    <th>
+                                        <a class="waves-effect waves-dark" title="Edit Transaction" asp-controller="BankAccount" asp-action="Transactions" asp-route-bankAccountId="@Model.BankAccount.BankAccountId" asp-route-bankAccountTransactionId="@transaction.BankAccountTransactionId">
+                                            <i class="mdi mdi-pencil-box-outline"></i>
+                                        </a>
+                                        <a class="waves-effect waves-dark" title="Delete Transaction" href="javascript:void(0)">
+                                            <i class="mdi mdi-delete"></i>
+                                        </a>
+                                    </th>
+                                </tr>
+                            }
+                            <tr>
+                                <td></td>
+                                <td>Opening Balance</td>
+                                <td></td>
+                                <td></td>
+                                <td>@Model.BankAccount.OpeningBalance.FormatCurrency()</td>
+                                <td></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

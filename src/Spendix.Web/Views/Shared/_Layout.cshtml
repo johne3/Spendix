@@ -11,6 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Spendix</title>
     <partial name="_BaseStyles" />
+    @RenderSection("Styles", required: false)
 </head>
 
 <body id="page-top">
@@ -67,16 +68,15 @@
                     <i class="fas fa-spinner fa-spin"></i>
                 </a>
             </li>
-
-            <li class="nav-item" v-for="bankAccount in bankAccounts">
-                <a class="nav-link" v-bind:href="bankAccount.detailUrl">
+            <li class="nav-item" v-for="bankAccount in bankAccounts" v-else>
+                <a class="nav-link" v-bind:href="bankAccount.transactionsUrl">
                     <i class="fas fa-fw fa-dollar-sign"></i>
                     <span>{{bankAccount.name}}</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="javascript:void(0)">
+                <a class="nav-link" href="javascript:void(0)" v-on:click="showAddAccountModal">
                     <i class="fas fa-fw fa-plus"></i>
                     <span>Add Account</span>
                 </a>
@@ -140,6 +140,7 @@
                 <!-- End of Topbar -->
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
+                    <partial name="_AlertMessage" />
                     @RenderBody()
                 </div>
                 <!-- /.container-fluid -->
@@ -160,6 +161,7 @@
         <!-- End of Content Wrapper -->
     </div>
     <partial name="_BaseScripts" />
+    <partial name="_ValidationScripts" />
     <environment include="Development">
         <script src="~/lib/vue/vue.js"></script>
         <script src="~/js/views/shared/layout.js"></script>
@@ -171,3 +173,40 @@
     @RenderSection("Scripts", required: false)
 </body>
 </html>
+
+
+<div class="modal fade" tabindex="-1" role="dialog" id="addBankAccountModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form asp-controller="BankAccount" asp-action="SaveBankAccount" id="createBankAccountForm">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create Bank Account</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="type">Account Type</label>
+                        <select class="form-control" id="type" name="type">
+                            <option value="@BankAccountTypes.Checking">@BankAccountTypes.Checking</option>
+                            <option value="@BankAccountTypes.Savings">@BankAccountTypes.Savings</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Account Name</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Account Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="openingBalance">Opening Balance</label>
+                        <input type="text" class="form-control" id="openingBalance" name="openingBalance" placeholder="Opening Balance">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

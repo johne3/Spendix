@@ -32,7 +32,7 @@ namespace Spendix.Web.Controllers
             {
                 x.BankAccountId,
                 x.Name,
-                detailUrl = Url.Action("Detail", "BankAccount", new { })
+                transactionsUrl = Url.Action("Transactions", "BankAccountTransactions", new { x.BankAccountId })
             }));
         }
     }

@@ -18,6 +18,8 @@ namespace Spendix.Core.Extensions
             });
 
             services.AddScoped<BankAccountRepo>();
+            services.AddScoped<BankAccountTransactionCategoryRepo>();
+            services.AddScoped<BankAccountTransactionRepo>();
             services.AddScoped<UserAccountRepo>();
 
             return services;
