@@ -96,7 +96,7 @@
                                         }
                                         else
                                         {
-                                            <text>$0.00</text>
+                                            <text>@((Model.BankAccount.OpeningBalance + transaction.Amount).FormatCurrency())</text>
                                         }
                                     </td>
                                     <th>
@@ -109,6 +109,15 @@
                                     </th>
                                 </tr>
                             }
+                            <tr>
+                                <td></td>
+                                <td>Opening Balance</td>
+                                <td></td>
+                                <td></td>
+                                <td>@Model.BankAccount.OpeningBalance.FormatCurrency()</td>
+                                <td></td>
+                            </tr>
+
                         </tbody>
                     </table>
                 </div>
