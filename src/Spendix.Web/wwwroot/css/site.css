@@ -11,6 +11,12 @@ form.user .btn-user {
     font-size: 1rem;
 }
 
+input.error, select.error {
+    border-width: 1px;
+    border-style: solid;
+    border-color: #dc3545;
+}
+
 label.error {
     font-size: 1rem;
     color: #D8000C;
