@@ -33,9 +33,39 @@ $(document).ready(function () {
                 if ($(".sidebar").hasClass("toggled")) {
                     $('.sidebar .collapse').collapse('hide');
                 };
+            },
+            showAddAccountModal() {
+                $('#addBankAccountModal').modal('show');
             }
         }
     });
 
     vm.getBankAccounts();
+
+    $('#createBankAccountForm').validate({
+        rules: {
+            type: {
+                required: true
+            },
+            name: {
+                required: true
+            },
+            openingBalance: {
+                required: true,
+                number: true
+            }
+        },
+        messages: {
+            type: {
+                required: 'Account Type is required.'
+            },
+            name: {
+                required: 'Account Name is required.'
+            },
+            openingBalance: {
+                required: 'Opening Balance is required.',
+                number: 'Opening Balance must be a valid number.'
+            }
+        }
+    });
 });

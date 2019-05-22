@@ -1,13 +1,14 @@
 ﻿form.user .form-control-user {
-    border-radius: unset;
+    border-radius: 0.35rem;
 }
 
 form.user .btn-user {
-    border-radius: unset;
+    border-radius: 0.35rem;
 }
 
 .error {
     width: 100%;
+    font-size: 1rem;
 }
 
 label.error {
