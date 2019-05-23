@@ -1,11 +1,13 @@
-﻿var vm;
+﻿var sidebarViewModel;
+var editBankAccountModalViewModel;
 
 $(document).ready(function () {
-    vm = new Vue({
+    sidebarViewModel = new Vue({
         el: '#accordionSidebar',
         data: {
             loading: true,
-            bankAccounts: []
+            bankAccounts: [],
+            selectedBankAccountId: ''
         },
         methods: {
             getBankAccounts() {
@@ -18,8 +20,8 @@ $(document).ready(function () {
                             }
 
                             response.json().then(function (data) {
-                                vm.loading = false;
-                                vm.bankAccounts = data;
+                                sidebarViewModel.loading = false;
+                                sidebarViewModel.bankAccounts = data;
                             });
                         }
                     )
@@ -35,14 +37,100 @@ $(document).ready(function () {
                 };
             },
             showAddAccountModal() {
-                $('#addBankAccountModal').modal('show');
+                editBankAccountModalViewModel.clearBankAccount();
+                $('#editBankAccountModal').modal('show');
+            },
+            showEditBankAccountModal(bankAccountId) {
+                var bankAccount = this.bankAccounts.filter(function (bankAccount) {
+                    return bankAccount.bankAccountId === bankAccountId;
+                })[0];
+
+                editBankAccountModalViewModel.setBankAccount(bankAccount);
+                $('#editBankAccountModal').modal('show');
+            },
+            showDeleteBankAccountModal(bankAccountId) {
+                this.selectedBankAccountId = bankAccountId;
+                $('#deleteBankAccountModal').modal('show');
+            },
+            deleteBankAccount() {
+                fetch('/api/BankAccounts', {
+                    method: 'DELETE',
+                    body: JSON.stringify(this.selectedBankAccountId),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                }).then(function (response) {
+                    if (response.status !== 200) {
+                        console.log('Error. Status Code: ' + response.status);
+                        return;
+                    }
+
+                    sidebarViewModel.bankAccounts = sidebarViewModel.bankAccounts.filter(function (bankAccount) {
+                        return bankAccount.bankAccountId !== sidebarViewModel.selectedBankAccountId;
+                    });
+
+                    $('#deleteBankAccountModal').modal('hide');
+                }).catch(err => console.log('Fetch Error :-S', err));
             }
         }
     });
 
-    vm.getBankAccounts();
+    editBankAccountModalViewModel = new Vue({
+        el: '#editBankAccountModal',
+        data: {
+            bankAccountId: '',
+            name: '',
+            type: 'Checking',
+            openingBalance: 0
+        },
+        methods: {
+            setBankAccount(bankAccount) {
+                this.bankAccountId = bankAccount.bankAccountId;
+                this.name = bankAccount.name;
+                this.type = bankAccount.type;
+                this.openingBalance = bankAccount.openingBalance;
+            },
+            clearBankAccount() {
+                this.bankAccountId = '';
+                this.name = '';
+                this.type = 'Checking';
+                this.openingBalance = 0;
+            },
+            saveBankAccount() {
+                if ($('#editBankAccountForm').valid() === false) {
+                    return;
+                }
 
-    $('#createBankAccountForm').validate({
+                var data = {
+                    bankAccountId: this.bankAccountId,
+                    name: this.name,
+                    type: this.type,
+                    openingBalance: this.openingBalance
+                };
+
+                fetch('/api/BankAccounts', {
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                }).then(function (response) {
+                    if (response.status !== 200) {
+                        console.log('Error. Status Code: ' + response.status);
+                        return;
+                    }
+
+                    sidebarViewModel.getBankAccounts();
+
+                    $('#editBankAccountModal').modal('hide');
+                }).catch(err => console.log('Fetch Error :-S', err));
+            }
+        }
+    });
+
+    sidebarViewModel.getBankAccounts();
+
+    $('#editBankAccountForm').validate({
         rules: {
             type: {
                 required: true
