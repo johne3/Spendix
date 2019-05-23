@@ -7,7 +7,8 @@ $(document).ready(function () {
         data: {
             loading: true,
             bankAccounts: [],
-            selectedBankAccountId: ''
+            selectedBankAccountId: '',
+            showActions: true
         },
         methods: {
             getBankAccounts() {
@@ -34,7 +35,9 @@ $(document).ready(function () {
                 $(".sidebar").toggleClass("toggled");
                 if ($(".sidebar").hasClass("toggled")) {
                     $('.sidebar .collapse').collapse('hide');
-                };
+                }
+
+                this.showActions = !$(".sidebar").hasClass("toggled");
             },
             showAddAccountModal() {
                 editBankAccountModalViewModel.clearBankAccount();
