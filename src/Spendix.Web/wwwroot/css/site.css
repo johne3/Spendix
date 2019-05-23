@@ -30,3 +30,8 @@ b, strong {
 .topbar {
     height: 3.375rem;
 }
+
+.nav-item > .nav-link > a {
+    color: #FFFFFF;
+    text-decoration: none;
+}

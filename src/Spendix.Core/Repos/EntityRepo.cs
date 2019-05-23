@@ -100,6 +100,11 @@ namespace Spendix.Core.Repos
             entities.ForEach(x => PrepareEntityForCommit(x));
         }
 
+        public void Delete(TEntity entity)
+        {
+            entity.IsDeleted = true;
+        }
+
         private void RemoveEmptyStringAndWhitespace(TEntity entity)
         {
             var stringProperties = entity.GetType().GetProperties().Where(x => x.PropertyType == typeof(string)).ToList();

@@ -68,12 +68,22 @@
                     <i class="fas fa-spinner fa-spin"></i>
                 </a>
             </li>
+
             <li class="nav-item" v-for="bankAccount in bankAccounts" v-else>
-                <a class="nav-link" v-bind:href="bankAccount.transactionsUrl">
-                    <i class="fas fa-fw fa-dollar-sign"></i>
-                    <span>{{bankAccount.name}}</span>
-                </a>
+                <div class="nav-link">
+                    <a v-bind:href="bankAccount.transactionsUrl">
+                        <i class="fas fa-fw fa-dollar-sign"></i>
+                        <span>{{bankAccount.name}}</span>
+                    </a>
+                    <a href="javascript:void(0)" class="float-right" title="Delete Account" v-on:click="showDeleteBankAccountModal(bankAccount.bankAccountId)"  v-if="showActions">
+                        <i class="fas fa-sm fa-fw fa-trash"></i>
+                    </a>
+                    <a href="javascript:void(0)" class="float-right" title="Edit Account" v-on:click="showEditBankAccountModal(bankAccount.bankAccountId)"  v-if="showActions">
+                        <i class="fas fa-sm fa-fw fa-clipboard"></i>
+                    </a>
+                </div>
             </li>
+
 
             <li class="nav-item">
                 <a class="nav-link" href="javascript:void(0)" v-on:click="showAddAccountModal">
@@ -90,6 +100,26 @@
                 <button class="rounded-circle border-0" id="sidebarToggle" v-on:click="toggleSidebar"></button>
             </div>
 
+            <div class="modal fade" tabindex="-1" role="dialog" id="deleteBankAccountModal">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"> <i class="fas fa-sm fa-fw fa-trash"></i> Delete Bank Account</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <p>Are you sure you want to delete this bank account?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" v-on:click="deleteBankAccount">Yes, delete</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </ul>
         <!-- End of Sidebar -->
         <!-- Content Wrapper -->
@@ -174,11 +204,10 @@
 </body>
 </html>
 
-
-<div class="modal fade" tabindex="-1" role="dialog" id="addBankAccountModal">
+<div class="modal fade" tabindex="-1" role="dialog" id="editBankAccountModal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form asp-controller="BankAccount" asp-action="SaveBankAccount" id="createBankAccountForm">
+            <form id="editBankAccountForm">
                 <div class="modal-header">
                     <h5 class="modal-title">Create Bank Account</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -188,22 +217,22 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="type">Account Type</label>
-                        <select class="form-control" id="type" name="type">
+                        <select class="form-control" id="type" name="type" v-model="type">
                             <option value="@BankAccountTypes.Checking">@BankAccountTypes.Checking</option>
                             <option value="@BankAccountTypes.Savings">@BankAccountTypes.Savings</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="name">Account Name</label>
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Account Name">
+                        <input type="text" class="form-control" id="name" name="name" v-model="name" placeholder="Account Name">
                     </div>
                     <div class="form-group">
                         <label for="openingBalance">Opening Balance</label>
-                        <input type="text" class="form-control" id="openingBalance" name="openingBalance" placeholder="Opening Balance">
+                        <input type="text" class="form-control" id="openingBalance" name="openingBalance" v-model="openingBalance" :disabled="bankAccountId !== ''" placeholder="Opening Balance">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-primary" v-on:click="saveBankAccount">Save changes</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </form>
