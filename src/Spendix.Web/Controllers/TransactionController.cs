@@ -16,9 +16,9 @@ using Spendix.Core.Entities;
 
 namespace Spendix.Web.Controllers
 {
-    [Route("BankAccountTransactions")]
+    [Route("Transactions")]
     [Authorize]
-    public class BankAccountTransactionsController : BaseController
+    public class TransactionController : BaseController
     {
         private readonly ILoggedInUserAccountAccessor loggedInUserAccountAccessor;
         private readonly BankAccountRepo bankAccountRepo;
@@ -27,7 +27,7 @@ namespace Spendix.Web.Controllers
 
         private readonly SpendixDbContext spendixDbContext;
 
-        public BankAccountTransactionsController(IServiceProvider serviceProvider) : base(serviceProvider)
+        public TransactionController(IServiceProvider serviceProvider) : base(serviceProvider)
         {
             loggedInUserAccountAccessor = serviceProvider.GetService<ILoggedInUserAccountAccessor>();
             bankAccountRepo = serviceProvider.GetService<BankAccountRepo>();

@@ -40,7 +40,7 @@ namespace Spendix.Web.Controllers
                 x.Name,
                 x.Type,
                 x.OpeningBalance,
-                transactionsUrl = Url.Action("Transactions", "BankAccountTransactions", new { x.BankAccountId })
+                transactionsUrl = Url.Action("Transactions", "Transaction", new { x.BankAccountId })
             }).OrderBy(x => x.Name));
         }
 
