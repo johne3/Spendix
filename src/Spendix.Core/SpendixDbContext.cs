@@ -28,6 +28,7 @@ namespace Spendix.Core
             modelBuilder.ApplyConfiguration(new BankAccountConfig());
             modelBuilder.ApplyConfiguration(new BankAccountTransactionConfig());
             modelBuilder.ApplyConfiguration(new BankAccountTransactionCategoryConfig());
+            modelBuilder.ApplyConfiguration(new BankAccountTransactionSubCategoryConfig());
             modelBuilder.ApplyConfiguration(new UserAccountConfig());
 
             var bankAccountTransactionBalanceModelBuilder = modelBuilder.Query<BankAccountTransactionBalanceModel>();
