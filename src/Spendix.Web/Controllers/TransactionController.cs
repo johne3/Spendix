@@ -122,7 +122,7 @@ namespace Spendix.Web.Controllers
         [HttpGet, Route("/api/TransactionCategories/{transactionType}")]
         public async Task<IActionResult> TransactionCategories(string transactionType)
         {
-            var categories = (await bankAccountTransactionCategoryRepo.FindByTransactionType(loggedInUserAccountAccessor.GetLoggedInUserAccount(), transactionType)).OrderBy(x => x.Name);
+            var categories = (await bankAccountTransactionCategoryRepo.FindByUserAccountAndTransactionType(loggedInUserAccountAccessor.GetLoggedInUserAccount(), transactionType)).OrderBy(x => x.Name);
 
             return Ok(new
             {
