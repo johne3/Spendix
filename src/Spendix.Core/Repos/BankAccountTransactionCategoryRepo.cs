@@ -14,7 +14,16 @@ namespace Spendix.Core.Repos
         {
         }
 
-        public Task<List<BankAccountTransactionCategory>> FindByTransactionType(UserAccount userAccount, string transactionType)
+        public Task<List<BankAccountTransactionCategory>> FindByUserAccountAsync(UserAccount userAccount)
+        {
+            var q = from batc in DataContext.BankAccountTransactionCategories
+                    where batc.UserAccountId == userAccount.UserAccountId
+                    select batc;
+
+            return q.ToListAsync();
+        }
+
+        public Task<List<BankAccountTransactionCategory>> FindByUserAccountAndTransactionType(UserAccount userAccount, string transactionType)
         {
             var q = from batc in DataContext.BankAccountTransactionCategories
                     where batc.UserAccountId == userAccount.UserAccountId
