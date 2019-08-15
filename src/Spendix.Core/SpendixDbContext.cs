@@ -17,6 +17,8 @@ namespace Spendix.Core
 
         public DbSet<BankAccountTransactionCategory> BankAccountTransactionCategories { get; set; }
 
+        public DbSet<BankAccountTransactionSubCategory> BankAccountTransactionSubCategories { get; set; }
+
         public DbSet<UserAccount> UserAccounts { get; set; }
 
         public DbQuery<BankAccountTransactionBalanceModel> BankAccountTransactionBalanceModels { get; set; }

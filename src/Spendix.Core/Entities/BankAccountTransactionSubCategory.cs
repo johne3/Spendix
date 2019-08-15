@@ -11,5 +11,7 @@ namespace Spendix.Core.Entities
         public Guid BankAccountTransactionCategoryId { get; set; }
 
         public string Name { get; set; }
+
+        public BankAccountTransactionCategory BankAccountTransactionCategory { get; set; }
     }
 }
