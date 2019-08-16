@@ -16,40 +16,30 @@
     </environment>
 
     <script id="category-template" type="text/x-handlebars-template">
-      
-    </script>
-}
-<form asp-controller="Category" asp-action="Categories" method="post">
-    <div class="row">
-        <div class="col-6">
-            <div class="card card-outline-info">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <h3>Payment Categories</h3>
-                            <div class="form-body">
-                                <div class="row" id="paymentCategoriesRow">
-                                    <div class="col-md-8">
-                                        Name
+        <div class="card card-outline-info mb-2">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-body">
+                            <div class="row" id="">
+                                <div class="col-md-11">
+                                    <div class="form-group">
+                                        <input type="text" id="" name="" class="form-control" placeholder="Category Name" value="">
                                     </div>
-                                    <div class="col-md-4">
-                                    </div>
-                                    @foreach (var category in Model.PaymentCategories)
-                                    {
-                                        <div class="col-md-11">
-                                            <div class="form-group">
-                                                <input type="text" id="" name="" class="form-control" placeholder="" value="  @category.Name">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-1">
-                                            <a href="javascript:void(0)" class="float-right mt-2"><i class="fas fa-fw fa-trash"></i></a>
-                                        </div>
-                                    }
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <a href="javascript:void(0)" class="float-right" id="addPaymentCategory"><i class="fas fa-fw fa-plus"></i> add category</a>
-                                    </div>
+                                <div class="col-md-1">
+                                    <a href="javascript:void(0)" class="float-right mt-2"><i class="fas fa-fw fa-trash"></i></a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4"></div>
+                                <div class="col-8 subCategoryHeader d-none">
+                                    Sub Categories
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <a href="javascript:void(0)" class="float-right addSubCategory"><i class="fas fa-fw fa-plus"></i> add sub category</a>
                                 </div>
                             </div>
                         </div>
@@ -57,41 +47,142 @@
                 </div>
             </div>
         </div>
+    </script>
+
+    <script id="sub-category-template" type="text/x-handlebars-template">
+        <div class="row">
+            <div class="col-4">
+            </div>
+            <div class="col-7">
+                <div class="form-group">
+                    <input type="text" id="" name="" class="form-control" placeholder="Sub Category Name" value="">
+                </div>
+            </div>
+            <div class="col-1">
+                <a href="javascript:void(0)" class="float-right mt-2"><i class="fas fa-fw fa-trash"></i></a>
+            </div>
+        </div>
+    </script>
+}
+<form asp-controller="Category" asp-action="Categories" method="post">
+    <div class="row">
         <div class="col-6">
-            <div class="card card-outline-info">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <h3>Deposit Categories</h3>
-                            <div class="form-body">
-                                <div class="row" id="depositCategoriesRow">
-                                    <div class="col-md-8">
-                                        Name
-                                    </div>
-                                    <div class="col-md-4">
-                                    </div>
-                                    @foreach (var category in Model.DepositCategories)
-                                    {
+            <h3>Payment Categories</h3>
+        </div>
+        <div class="col-6">
+            <h3>Deposit Categories</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6" id="paymentCategoryColumn">
+            @foreach (var category in Model.PaymentCategories)
+            {
+                <div class="card card-outline-info mb-2">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-body">
+                                    <div class="row" id="">
                                         <div class="col-md-11">
                                             <div class="form-group">
-                                                <input type="text" id="" name="" class="form-control" placeholder="" value="  @category.Name">
+                                                <input type="text" id="" name="" class="form-control" placeholder="Category Name" value="@category.Name">
                                             </div>
                                         </div>
                                         <div class="col-md-1">
                                             <a href="javascript:void(0)" class="float-right mt-2"><i class="fas fa-fw fa-trash"></i></a>
                                         </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4"></div>
+                                        <div class="col-8 subCategoryHeader @(!category.BankAccountTransactionSubCategories.Any() ? "d-none" : string.Empty)">
+                                            Sub Categories
+                                        </div>
+                                    </div>
+                                    @foreach (var subCategory in category.BankAccountTransactionSubCategories.OrderBy(x => x.Name))
+                                    {
+                                        <div class="row">
+                                            <div class="col-4">
+                                            </div>
+                                            <div class="col-7">
+                                                <div class="form-group">
+                                                    <input type="text" id="" name="" class="form-control" placeholder="Sub Category Name" value="  @subCategory.Name">
+                                                </div>
+                                            </div>
+                                            <div class="col-1">
+                                                <a href="javascript:void(0)" class="float-right mt-2"><i class="fas fa-fw fa-trash"></i></a>
+                                            </div>
+                                        </div>
                                     }
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <a href="javascript:void(0)" class="float-right" id="addDepositCategory"><i class="fas fa-fw fa-plus"></i> add category</a>
+                                    <div class="row addSubCategoryRow">
+                                        <div class="col-md-12">
+                                            <a href="javascript:void(0)" class="float-right addSubCategory"><i class="fas fa-fw fa-plus"></i> add sub category</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            }
+        </div>
+        <div class="col-6" id="depositCategoryColumn">
+            @foreach (var category in Model.DepositCategories)
+            {
+                <div class="card card-outline-info mb-2">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-body">
+                                    <div class="row" id="">
+                                        <div class="col-md-11">
+                                            <div class="form-group">
+                                                <input type="text" id="" name="" class="form-control" placeholder="Category Name" value="@category.Name">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <a href="javascript:void(0)" class="float-right mt-2"><i class="fas fa-fw fa-trash"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4"></div>
+                                        <div class="col-8 subCategoryHeader @(!category.BankAccountTransactionSubCategories.Any() ? "d-none" : string.Empty)">
+                                            Sub Categories
+                                        </div>
+                                    </div>
+                                    @foreach (var subCategory in category.BankAccountTransactionSubCategories.OrderBy(x => x.Name))
+                                    {
+                                        <div class="row">
+                                            <div class="col-4">
+                                            </div>
+                                            <div class="col-7">
+                                                <div class="form-group">
+                                                    <input type="text" id="" name="" class="form-control" placeholder="Sub Category Name" value="  @subCategory.Name">
+                                                </div>
+                                            </div>
+                                            <div class="col-1">
+                                                <a href="javascript:void(0)" class="float-right mt-2"><i class="fas fa-fw fa-trash"></i></a>
+                                            </div>
+                                        </div>
+                                    }
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <a href="javascript:void(0)" class="float-right addSubCategory"><i class="fas fa-fw fa-plus"></i> add sub category</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <a href="javascript:void(0)" class="float-right" id="addPaymentCategory"><i class="fas fa-fw fa-plus"></i> add payment category</a>
+        </div>
+        <div class="col-6">
+            <a href="javascript:void(0)" class="float-right" id="addDepositCategory"><i class="fas fa-fw fa-plus"></i> add deposit category</a>
         </div>
     </div>
     <div class="row mt-2">

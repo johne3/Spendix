@@ -21,7 +21,7 @@ namespace Spendix.Core.EntityConfig
             builder.Property(x => x.BankAccountTransactionCategoryId).IsRequired();
             builder.Property(x => x.Name).IsRequired().HasMaxLength(200);
 
-            builder.HasOne(x => x.BankAccountTransactionCategory).WithMany().HasForeignKey(x => x.BankAccountTransactionCategoryId);
+            builder.HasOne(x => x.BankAccountTransactionCategory).WithMany(x => x.BankAccountTransactionSubCategories).HasForeignKey(x => x.BankAccountTransactionCategoryId);
         }
     }
 }

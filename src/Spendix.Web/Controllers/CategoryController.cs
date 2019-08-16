@@ -11,6 +11,7 @@ using Spendix.Core.Constants;
 using Microsoft.AspNetCore.Http;
 using Spendix.Web.Models;
 using Spendix.Web.Accessors;
+using Spendix.Core.Accessors;
 
 namespace Spendix.Web.Controllers
 {
@@ -19,18 +20,18 @@ namespace Spendix.Web.Controllers
     public class CategoryController : BaseController
     {
         private readonly BankAccountTransactionCategoryRepo bankAccountTransactionCategoryRepo;
-        private readonly LoggedInUserAccountAccessor loggedInUserAccountAccessor;
+        private readonly ILoggedInUserAccountAccessor loggedInUserAccountAccessor;
 
         public CategoryController(IServiceProvider serviceProvider) : base(serviceProvider)
         {
             bankAccountTransactionCategoryRepo = serviceProvider.GetService<BankAccountTransactionCategoryRepo>();
-            loggedInUserAccountAccessor = serviceProvider.GetService<LoggedInUserAccountAccessor>();
+            loggedInUserAccountAccessor = serviceProvider.GetService<ILoggedInUserAccountAccessor>();
         }
 
         [HttpGet, Route("")]
         public async Task<IActionResult> Categories()
         {
-            var categories = await bankAccountTransactionCategoryRepo.FindByUserAccountAsync(loggedInUserAccountAccessor.GetLoggedInUserAccount());
+            var categories = await bankAccountTransactionCategoryRepo.FindByUserAccountWithInvlucesAsync(loggedInUserAccountAccessor.GetLoggedInUserAccount());
 
             var vm = new CategoriesViewModel
             {

@@ -1,12 +1,29 @@
-﻿$(document).ready(function () {
+﻿var categoryTemplate;
+var subCategoryTemplate;
+
+
+$(document).ready(function () {
+    var categoryTemplateHtml = $('#category-template').html();
+    categoryTemplate = Handlebars.compile(categoryTemplateHtml);
+
+    var subCategoryTemplateHtml = $('#sub-category-template').html();
+    subCategoryTemplate = Handlebars.compile(subCategoryTemplateHtml);
+
+
     $('#addPaymentCategory').on('click', function () {
-        var html = getRowHtml();
-        $('#paymentCategoriesRow').append(html);
+        var html = categoryTemplate({});
+        $('#paymentCategoryColumn').append(html);
+    });
+
+    $(document).on('click', '.addSubCategory', function () {
+        $(this).parents('.card-body').find('.subCategoryHeader').removeClass('d-none');
+        var html = subCategoryTemplate({});
+        $(this).parent().parent().before(html);
     });
 
     $('#addDepositCategory').on('click', function () {
-        var html = getRowHtml();
-        $('#depositCategoriesRow').append(html);
+        var html = categoryTemplate({});
+        $('#depositCategoryColumn').append(html);
     });
 });
 
