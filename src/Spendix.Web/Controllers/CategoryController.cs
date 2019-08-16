@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Spendix.Web.Models;
 using Spendix.Web.Accessors;
 using Spendix.Core.Accessors;
+using Spendix.Core;
 
 namespace Spendix.Web.Controllers
 {
@@ -19,12 +20,16 @@ namespace Spendix.Web.Controllers
     [Route("Categories")]
     public class CategoryController : BaseController
     {
+        private readonly SpendixDbContext spendixDbContext;
         private readonly BankAccountTransactionCategoryRepo bankAccountTransactionCategoryRepo;
+        private readonly BankAccountTransactionSubCategoryRepo bankAccountTransactionSubCategoryRepo;
         private readonly ILoggedInUserAccountAccessor loggedInUserAccountAccessor;
 
         public CategoryController(IServiceProvider serviceProvider) : base(serviceProvider)
         {
+            spendixDbContext = serviceProvider.GetService<SpendixDbContext>();
             bankAccountTransactionCategoryRepo = serviceProvider.GetService<BankAccountTransactionCategoryRepo>();
+            bankAccountTransactionSubCategoryRepo = serviceProvider.GetService<BankAccountTransactionSubCategoryRepo>();
             loggedInUserAccountAccessor = serviceProvider.GetService<ILoggedInUserAccountAccessor>();
         }
 
@@ -46,6 +51,38 @@ namespace Spendix.Web.Controllers
         public async Task<IActionResult> Categories(IFormCollection form)
         {
             return SetAlertMessageAndRedirect("Categories", "Category", "Categories saved!", AlertMessageType.Success);
+        }
+
+        [HttpPost, Route("/api/Category/DeleteCategory/{categoryId}")]
+        public async Task<IActionResult> DeleteCategroy(Guid categoryId)
+        {
+            var category = await bankAccountTransactionCategoryRepo.FindByIdAsync(categoryId);
+
+            if (category != null)
+            {
+                var subCategories = await bankAccountTransactionSubCategoryRepo.FindByCategory(category);
+                bankAccountTransactionSubCategoryRepo.DeleteSet(subCategories);
+                bankAccountTransactionCategoryRepo.Delete(category);
+
+                await spendixDbContext.SaveChangesAsync();
+            }
+
+            return Ok(new { });
+        }
+
+        [HttpPost, Route("/api/Category/DeleteSubCategory/{subCategoryId}")]
+        public async Task<IActionResult> DeleteSubCategory(Guid subCategoryId)
+        {
+            var subCategory = await bankAccountTransactionSubCategoryRepo.FindByIdAsync(subCategoryId);
+
+            if (subCategory != null)
+            {
+                bankAccountTransactionSubCategoryRepo.Delete(subCategory);
+
+                await spendixDbContext.SaveChangesAsync();
+            }
+
+            return Ok(new { });
         }
     }
 }

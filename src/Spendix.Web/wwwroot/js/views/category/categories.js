@@ -1,6 +1,7 @@
 ﻿var categoryTemplate;
 var subCategoryTemplate;
 
+var rowToDelete;
 
 $(document).ready(function () {
     var categoryTemplateHtml = $('#category-template').html();
@@ -8,7 +9,6 @@ $(document).ready(function () {
 
     var subCategoryTemplateHtml = $('#sub-category-template').html();
     subCategoryTemplate = Handlebars.compile(subCategoryTemplateHtml);
-
 
     $('#addPaymentCategory').on('click', function () {
         var html = categoryTemplate({});
@@ -25,15 +25,40 @@ $(document).ready(function () {
         var html = categoryTemplate({});
         $('#depositCategoryColumn').append(html);
     });
-});
 
-function getRowHtml() {
-    return '<div class="col-md-11">' +
-        '<div class="form-group">' +
-        '<input type="text" id="" name="" class="form-control" placeholder="Name" value="">' +
-        '</div>' +
-        '</div >' +
-        '<div class="col-md-1">' +
-        '<a href="javascript:void(0)" class="float-right mt-2"><i class="fas fa-fw fa-trash"></i></a>' +
-        '</div>';
-}
+    $(document).on('click', '.confirmDeleteCategoryButton', function () {
+        rowToDelete = $(this).parents('.card');
+        $('#deleteCategoryModal #deleteCategoryButton').data('categoryId', $(this).data('categoryId'));
+        $('#deleteCategoryModal').modal('show');
+    });
+
+    $(document).on('click', '.confirmDeleteSubCategoryButton', function () {
+        rowToDelete = $(this).parents('.subCategoryRow');
+        $('#deleteSubCategoryModal #deleteSubCategoryButton').data('subCategoryId', $(this).data('subCategoryId'));
+        $('#deleteSubCategoryModal').modal('show');
+    });
+
+    $('#deleteCategoryButton').on('click', function () {
+        var categoryId = $(this).data('categoryId');
+
+        $.post('/api/Category/DeleteCategory/' + categoryId, function () {
+            $('#deleteCategoryModal').modal('hide');
+
+            if (rowToDelete) {
+                rowToDelete.remove();
+            }
+        }, 'json');
+    });
+
+    $('#deleteSubCategoryButton').on('click', function () {
+        var subCategoryId = $(this).data('subCategoryId');
+
+        $.post('/api/Category/DeleteSubCategory/' + subCategoryId, function () {
+            $('#deleteSubCategoryModal').modal('hide');
+
+            if (rowToDelete) {
+                rowToDelete.remove();
+            }
+        }, 'json');
+    });
+});
