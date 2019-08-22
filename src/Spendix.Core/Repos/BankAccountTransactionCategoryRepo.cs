@@ -14,7 +14,16 @@ namespace Spendix.Core.Repos
         {
         }
 
-        public Task<List<BankAccountTransactionCategory>> FindByUserAccountWithInvlucesAsync(UserAccount userAccount)
+        public Task<List<BankAccountTransactionCategory>> FindByUserAccountAsync(UserAccount userAccount)
+        {
+            var q = from batc in DataContext.BankAccountTransactionCategories.Include(x => x.BankAccountTransactionSubCategories)
+                    where batc.UserAccountId == userAccount.UserAccountId
+                    select batc;
+
+            return q.ToListAsync();
+        }
+
+        public Task<List<BankAccountTransactionCategory>> FindByUserAccountWithIncludesAsync(UserAccount userAccount)
         {
             var q = from batc in DataContext.BankAccountTransactionCategories.Include(x => x.BankAccountTransactionSubCategories)
                     where batc.UserAccountId == userAccount.UserAccountId

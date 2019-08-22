@@ -11,18 +11,27 @@ $(document).ready(function () {
     subCategoryTemplate = Handlebars.compile(subCategoryTemplateHtml);
 
     $('#addPaymentCategory').on('click', function () {
-        var html = categoryTemplate({});
+        var number = findNextCategoryNumber('Payment');
+
+        var html = categoryTemplate({ number: number, transactionType: 'Payment' });
         $('#paymentCategoryColumn').append(html);
     });
 
     $(document).on('click', '.addSubCategory', function () {
+        var inputNamePrefix = $(this).data('inputNamePrefix');
+        var number = findNextSubCategoryNumber(inputNamePrefix);
+
         $(this).parents('.card-body').find('.subCategoryHeader').removeClass('d-none');
-        var html = subCategoryTemplate({});
+
+        var html = subCategoryTemplate({ inputNamePrefix: inputNamePrefix, subCategoryNumber: number });
+
         $(this).parent().parent().before(html);
     });
 
     $('#addDepositCategory').on('click', function () {
-        var html = categoryTemplate({});
+        var number = findNextCategoryNumber('Deposit');
+
+        var html = categoryTemplate({ number: number, transactionType: 'Deposit' });
         $('#depositCategoryColumn').append(html);
     });
 
@@ -62,3 +71,39 @@ $(document).ready(function () {
         }, 'json');
     });
 });
+
+function findNextCategoryNumber(transactionType) {
+    var nextNumber = 0;
+    var foundNext = false;
+
+    while (foundNext === false) {
+        var element = $('#' + transactionType + 'Category_' + nextNumber + '_CategoryId');
+
+        if (element.length === 0) {
+            foundNext = true;
+        } else {
+            nextNumber++;
+        }
+    }
+
+    return nextNumber;
+}
+
+function findNextSubCategoryNumber(inputNamePrefix) {
+    //PaymentCategory_0_SubCategory_0_SubCategoryId
+
+    var nextNumber = 0;
+    var foundNext = false;
+
+    while (foundNext === false) {
+        var element = $('#' + inputNamePrefix + 'SubCategory_' + nextNumber + '_SubCategoryId');
+
+        if (element.length === 0) {
+            foundNext = true;
+        } else {
+            nextNumber++;
+        }
+    }
+
+    return nextNumber;
+}

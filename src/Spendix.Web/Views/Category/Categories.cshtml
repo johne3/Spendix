@@ -1,6 +1,8 @@
 ﻿@model Spendix.Web.ViewModels.Category.CategoriesViewModel
 @{
     ViewData["Title"] = "Categories";
+
+    var categoryNumber = 0;
 }
 
 @section Styles {
@@ -24,7 +26,8 @@
                             <div class="row" id="">
                                 <div class="col-md-11">
                                     <div class="form-group">
-                                        <input type="text" id="" name="" class="form-control" placeholder="Category Name" value="">
+                                        <input type="hidden" id="{{transactionType}}Category_{{number}}_CategoryId" name="{{transactionType}}Category_{{number}}_CategoryId" value="" />
+                                        <input type="text" id="{{transactionType}}Category_{{number}}_Name" name="{{transactionType}}Category_{{number}}_Name" class="form-control" placeholder="Category Name" value="">
                                     </div>
                                 </div>
                                 <div class="col-md-1">
@@ -55,7 +58,8 @@
             </div>
             <div class="col-7">
                 <div class="form-group">
-                    <input type="text" id="" name="" class="form-control" placeholder="Sub Category Name" value="">
+                    <input type="hidden" id="{{inputNamePrefix}}SubCategory_{{subCategoryNumber}}_SubCategoryId" name="{{inputNamePrefix}}SubCategory_{{subCategoryNumber}}_SubCategoryId" class="form-control" value="">
+                    <input type="text" id="{{inputNamePrefix}}SubCategory_{{subCategoryNumber}}_Name" name="{{inputNamePrefix}}SubCategory_{{subCategoryNumber}}_Name" class="form-control" placeholder="Sub Category Name" value="">
                 </div>
             </div>
             <div class="col-1">
@@ -64,6 +68,7 @@
         </div>
     </script>
 }
+
 <form asp-controller="Category" asp-action="Categories" method="post">
     <div class="row">
         <div class="col-6">
@@ -77,6 +82,7 @@
         <div class="col-6" id="paymentCategoryColumn">
             @foreach (var category in Model.PaymentCategories)
             {
+                var inputNamePrefix = $"PaymentCategory_{categoryNumber}_";
                 <div class="card card-outline-info mb-2">
                     <div class="card-body">
                         <div class="row">
@@ -85,7 +91,8 @@
                                     <div class="row" id="">
                                         <div class="col-md-11">
                                             <div class="form-group">
-                                                <input type="text" id="" name="" class="form-control" placeholder="Category Name" value="@category.Name">
+                                                <input type="hidden" id="@($"{inputNamePrefix}CategoryId")" name="@($"{inputNamePrefix}CategoryId")" value="@category.BankAccountTransactionCategoryId" />
+                                                <input type="text" id="@($"{inputNamePrefix}Name")" name="@($"{inputNamePrefix}Name")" class="form-control" placeholder="Category Name" value="@category.Name">
                                             </div>
                                         </div>
                                         <div class="col-md-1">
@@ -98,24 +105,30 @@
                                             Sub Categories
                                         </div>
                                     </div>
+                                    @{
+                                        var subCategoryNumber = 0;
+                                    }
                                     @foreach (var subCategory in category.BankAccountTransactionSubCategories.OrderBy(x => x.Name))
                                     {
+                                        var subCategoryInputNamePrefix = $"SubCategory_{subCategoryNumber}_";
                                         <div class="row subCategoryRow">
                                             <div class="col-4">
                                             </div>
                                             <div class="col-7">
                                                 <div class="form-group">
-                                                    <input type="text" id="" name="" class="form-control" placeholder="Sub Category Name" value="  @subCategory.Name">
+                                                    <input type="hidden" id="@($"{inputNamePrefix}{subCategoryInputNamePrefix}SubCategoryId")" name="@($"{inputNamePrefix}{subCategoryInputNamePrefix}SubCategoryId")" value="@subCategory.BankAccountTransactionSubCategoryId" />
+                                                    <input type="text" id="@($"{inputNamePrefix}{subCategoryInputNamePrefix}Name")" name="@($"{inputNamePrefix}{subCategoryInputNamePrefix}Name")" class="form-control" placeholder="Sub Category Name" value="@subCategory.Name">
                                                 </div>
                                             </div>
                                             <div class="col-1">
                                                 <a href="javascript:void(0)" class="float-right mt-2 confirmDeleteSubCategoryButton" data-sub-category-id="@subCategory.BankAccountTransactionSubCategoryId"><i class="fas fa-fw fa-trash"></i></a>
                                             </div>
                                         </div>
+                                        subCategoryNumber++;
                                     }
                                     <div class="row addSubCategoryRow">
                                         <div class="col-md-12">
-                                            <a href="javascript:void(0)" class="float-right addSubCategory"><i class="fas fa-fw fa-plus"></i> add sub category</a>
+                                            <a href="javascript:void(0)" class="float-right addSubCategory" data-input-name-prefix="@inputNamePrefix"><i class="fas fa-fw fa-plus"></i> add sub category</a>
                                         </div>
                                     </div>
                                 </div>
@@ -123,11 +136,14 @@
                         </div>
                     </div>
                 </div>
+                categoryNumber++;
             }
         </div>
         <div class="col-6" id="depositCategoryColumn">
+            @{ categoryNumber = 0; }
             @foreach (var category in Model.DepositCategories)
             {
+                var inputNamePrefix = $"DepositCategory_{categoryNumber}_";
                 <div class="card card-outline-info mb-2">
                     <div class="card-body">
                         <div class="row">
@@ -136,7 +152,8 @@
                                     <div class="row" id="">
                                         <div class="col-md-11">
                                             <div class="form-group">
-                                                <input type="text" id="" name="" class="form-control" placeholder="Category Name" value="@category.Name">
+                                                <input type="hidden" id="@($"{inputNamePrefix}CategoryId")" name="@($"{inputNamePrefix}CategoryId")" value="@category.BankAccountTransactionCategoryId" />
+                                                <input type="text" id="@($"{inputNamePrefix}Name")" name="@($"{inputNamePrefix}Name")" class="form-control" placeholder="Category Name" value="@category.Name">
                                             </div>
                                         </div>
                                         <div class="col-md-1">
@@ -149,24 +166,30 @@
                                             Sub Categories
                                         </div>
                                     </div>
+                                    @{ 
+                                        var subCategoryNumber = 0;
+                                    }
                                     @foreach (var subCategory in category.BankAccountTransactionSubCategories.OrderBy(x => x.Name))
                                     {
+                                        var subCategoryInputNamePrefix = $"SubCategory_{subCategoryNumber}_";
                                         <div class="row subCategoryRow">
                                             <div class="col-4">
                                             </div>
                                             <div class="col-7">
                                                 <div class="form-group">
-                                                    <input type="text" id="" name="" class="form-control" placeholder="Sub Category Name" value="  @subCategory.Name">
+                                                    <input type="hidden" id="@($"{inputNamePrefix}{subCategoryInputNamePrefix}SubCategoryId")" name="@($"{inputNamePrefix}{subCategoryInputNamePrefix}SubCategoryId")" value="@subCategory.BankAccountTransactionSubCategoryId" />
+                                                    <input type="text" id="@($"{inputNamePrefix}{subCategoryInputNamePrefix}Name")" name="@($"{inputNamePrefix}{subCategoryInputNamePrefix}Name")" class="form-control" placeholder="Sub Category Name" value="@subCategory.Name">
                                                 </div>
                                             </div>
                                             <div class="col-1">
                                                 <a href="javascript:void(0)" class="float-right mt-2 confirmDeleteSubCategoryButton" data-sub-category-id="@subCategory.BankAccountTransactionSubCategoryId"><i class="fas fa-fw fa-trash"></i></a>
                                             </div>
                                         </div>
+                                        subCategoryNumber++;
                                     }
-                                    <div class="row">
+                                    <div class="row addSubCategoryRow">
                                         <div class="col-md-12">
-                                            <a href="javascript:void(0)" class="float-right addSubCategory"><i class="fas fa-fw fa-plus"></i> add sub category</a>
+                                            <a href="javascript:void(0)" class="float-right addSubCategory" data-input-name-prefix="@inputNamePrefix"><i class="fas fa-fw fa-plus"></i> add sub category</a>
                                         </div>
                                     </div>
                                 </div>
@@ -174,6 +197,7 @@
                         </div>
                     </div>
                 </div>
+                categoryNumber++;
             }
         </div>
     </div>
