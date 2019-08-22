@@ -30,13 +30,16 @@
             Amount: {
                 required: 'Amount is required.',
                 number: 'Amount must be a valid number.'
-
             }
         }
     });
 
     $('#TransactionType').on('change', function () {
         loadCategories();
+    });
+
+    $('#Category').on('change', function () {
+        loadSubCategries();
     });
 });
 
@@ -49,6 +52,19 @@ function loadCategories() {
 
         $.each(data.categories, function (index, category) {
             $('#Category').append('<option value="' + category.bankAccountTransactionCategoryId + '">' + category.name + '</option>');
+        });
+    });
+}
+
+function loadSubCategries() {
+    var categoryId = $('#Category').val();
+
+    $.get('/api/TransactionSubCategories/' + categoryId, function (data) {
+        $('#SubCategory').empty();
+        $('#SubCategory').append('<option value="">Select One</option>');
+
+        $.each(data.subCategories, function (index, subCategory) {
+            $('#SubCategory').append('<option value="' + subCategory.bankAccountTransactionSubCategoryId + '">' + subCategory.name + '</option>');
         });
     });
 }

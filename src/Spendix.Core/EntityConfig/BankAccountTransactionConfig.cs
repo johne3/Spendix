@@ -20,12 +20,14 @@ namespace Spendix.Core.EntityConfig
             builder.Property(x => x.BankAccountTransactionId).IsRequired().HasDefaultValueSql("newid()");
             builder.Property(x => x.BankAccountId).IsRequired();
             builder.Property(x => x.BankAccountTransactionCategoryId).IsRequired();
+            builder.Property(x => x.BankAccountTransactionSubCategoryId);
             builder.Property(x => x.TransactionDate).IsRequired();
             builder.Property(x => x.TransactionEnteredDateUtc).IsRequired();
             builder.Property(x => x.Payee).IsRequired().HasMaxLength(200);
             builder.Property(x => x.Amount).IsRequired();
 
             builder.HasOne(x => x.BankAccountTransactionCategory).WithMany().HasForeignKey(x => x.BankAccountTransactionCategoryId);
+            builder.HasOne(x => x.BankAccountTransactionSubCategory).WithMany().HasForeignKey(x => x.BankAccountTransactionSubCategoryId);
         }
     }
 }

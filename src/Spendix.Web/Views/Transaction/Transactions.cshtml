@@ -8,12 +8,17 @@
 
 @section Scripts {
     <environment include="Development">
-        <script src="~/js/views/bankAccountTransactions/transactions.js"></script>
+        <script src="~/js/views/transaction/transactions.js"></script>
     </environment>
     <environment exclude="Development">
-        <script src="~/js/views/bankAccountTransactions/transactions.js"></script>
+        <script src="~/js/views/transaction/transactions.js" asp-append-version="true"></script>
     </environment>
 }
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">@Model.BankAccount.Name</h1>
+</div>
+
 
 <div class="row">
     <div class="col-12">
@@ -21,38 +26,50 @@
             <div class="card-body">
                 <h4 class="card-title">Add Transaction</h4>
                 <hr>
-                <form id="transactionForm" asp-controller="BankAccountTransactions" asp-action="SaveTransaction" asp-route-bankAccountId="@Model.BankAccount.BankAccountId">
+                <form id="transactionForm" asp-controller="Transaction" asp-action="SaveTransaction" asp-route-bankAccountId="@Model.BankAccount.BankAccountId" method="post">
                     <input type="hidden" id="BankAccountTransactionId" name="BankAccountTransactionId" value="@Model.SelectedBankAccountTransaction?.BankAccountTransactionId" />
                     <div class="form-body">
                         <div class="row p-t-20">
-                            <div class="col-md-2">
+                            <div class="col-md-1">
                                 <div class="form-group">
                                     <label class="control-label">Type</label>
                                     <select asp-items="@Model.TransactionTypeSelectList" id="TransactionType" name="TransactionType" class="form-control custom-select"></select>
                                 </div>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-1">
                                 <div class="form-group">
                                     <label class="control-label">Date</label>
-                                    <input type="text" id="Date" name="Date" class="form-control" placeholder="Date" value="@Model.SelectedBankAccountTransaction?.TransactionDate.ToShortDateString()">
+                                    <input type="text" id="Date" name="Date" class="form-control" placeholder="Date" value="@Model.SelectedBankAccountTransaction?.TransactionDate.ToShortDateString()" autocomplete="off">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label class="control-label">Payee</label>
-                                    <input type="text" id="Payee" name="Payee" class="form-control" placeholder="Payee" maxlength="200" value="@Model.SelectedBankAccountTransaction?.Payee">
+                                    <input type="text" id="Payee" name="Payee" class="form-control" placeholder="Payee" maxlength="200" value="@Model.SelectedBankAccountTransaction?.Payee" autocomplete="off">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label class="control-label">Category</label>
                                     <select class="form-control custom-select" id="Category" name="Category"></select>
+                                    <br />
+                                    <a asp-controller="Category" asp-action="Categories" class="float-right">edit categories</a>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="control-label">Sub Category <small>(optional)</small></label>
+                                    <select class="form-control custom-select" id="SubCategory" name="SubCategory">
+                                        <option value="">Select One</option>
+                                    </select>
+                                    <br />
+                                    <a asp-controller="Category" asp-action="Categories" class="float-right">edit sub categories</a>
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label class="control-label">Amount</label>
-                                    <input type="text" id="Amount" name="Amount" class="form-control" placeholder="Amount" value="@Model.SelectedBankAccountTransaction?.Amount.FormatCurrency()">
+                                    <input type="text" id="Amount" name="Amount" class="form-control" placeholder="Amount" value="@Model.SelectedBankAccountTransaction?.Amount.FormatCurrency()" autocomplete="off">
                                 </div>
                             </div>
                         </div>
@@ -74,6 +91,7 @@
                             <tr>
                                 <th>Date</th>
                                 <th>Category</th>
+                                <th>Sub Category</th>
                                 <th>Payee</th>
                                 <th>Amount</th>
                                 <th>Balance</th>
@@ -87,6 +105,7 @@
                                 <tr>
                                     <td>@transaction.TransactionDate.ToShortDateString()</td>
                                     <td>@transaction.BankAccountTransactionCategory.Name</td>
+                                    <td>@transaction.BankAccountTransactionSubCategory?.Name</td>
                                     <td>@transaction.Payee</td>
                                     <td>@transaction.Amount.FormatCurrency()</td>
                                     <td>

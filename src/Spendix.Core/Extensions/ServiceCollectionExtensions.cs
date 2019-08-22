@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Spendix.Core.Repos;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace Spendix.Core.Extensions
@@ -17,10 +19,11 @@ namespace Spendix.Core.Extensions
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
             });
 
-            services.AddScoped<BankAccountRepo>();
-            services.AddScoped<BankAccountTransactionCategoryRepo>();
-            services.AddScoped<BankAccountTransactionRepo>();
-            services.AddScoped<UserAccountRepo>();
+            var repoTypes = Assembly.GetExecutingAssembly().GetTypes()
+                .Where(x => x.BaseType != null && x.BaseType.Name.Contains("EntityRepo"))
+                .ToList();
+
+            repoTypes.ForEach(x => services.AddScoped(x));
 
             return services;
         }
