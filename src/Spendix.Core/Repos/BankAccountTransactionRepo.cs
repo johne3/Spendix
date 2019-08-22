@@ -17,7 +17,9 @@ namespace Spendix.Core.Repos
 
         public Task<List<BankAccountTransaction>> FindByBankAccountAsync(BankAccount bankAccount)
         {
-            var q = from bat in DataContext.BankAccountTransactions.Include(x => x.BankAccountTransactionCategory)
+            var q = from bat in DataContext.BankAccountTransactions
+                                                .Include(x => x.BankAccountTransactionCategory)
+                                                .Include(x => x.BankAccountTransactionSubCategory)
                     where bat.BankAccountId == bankAccount.BankAccountId
                     select bat;
 

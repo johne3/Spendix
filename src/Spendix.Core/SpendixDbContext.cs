@@ -17,6 +17,8 @@ namespace Spendix.Core
 
         public DbSet<BankAccountTransactionCategory> BankAccountTransactionCategories { get; set; }
 
+        public DbSet<BankAccountTransactionSubCategory> BankAccountTransactionSubCategories { get; set; }
+
         public DbSet<UserAccount> UserAccounts { get; set; }
 
         public DbQuery<BankAccountTransactionBalanceModel> BankAccountTransactionBalanceModels { get; set; }
@@ -28,6 +30,7 @@ namespace Spendix.Core
             modelBuilder.ApplyConfiguration(new BankAccountConfig());
             modelBuilder.ApplyConfiguration(new BankAccountTransactionConfig());
             modelBuilder.ApplyConfiguration(new BankAccountTransactionCategoryConfig());
+            modelBuilder.ApplyConfiguration(new BankAccountTransactionSubCategoryConfig());
             modelBuilder.ApplyConfiguration(new UserAccountConfig());
 
             var bankAccountTransactionBalanceModelBuilder = modelBuilder.Query<BankAccountTransactionBalanceModel>();
