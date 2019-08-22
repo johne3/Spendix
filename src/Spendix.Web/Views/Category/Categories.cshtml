@@ -27,7 +27,7 @@
                                 <div class="col-md-11">
                                     <div class="form-group">
                                         <input type="hidden" id="{{transactionType}}Category_{{number}}_CategoryId" name="{{transactionType}}Category_{{number}}_CategoryId" value="" />
-                                        <input type="text" id="{{transactionType}}Category_{{number}}_Name" name="{{transactionType}}Category_{{number}}_Name" class="form-control" placeholder="Category Name" value="">
+                                        <input type="text" id="{{transactionType}}Category_{{number}}_Name" name="{{transactionType}}Category_{{number}}_Name" class="form-control" placeholder="Category Name" autocomplete="off" maxlength="50" value="">
                                     </div>
                                 </div>
                                 <div class="col-md-1">
@@ -59,7 +59,7 @@
             <div class="col-7">
                 <div class="form-group">
                     <input type="hidden" id="{{inputNamePrefix}}SubCategory_{{subCategoryNumber}}_SubCategoryId" name="{{inputNamePrefix}}SubCategory_{{subCategoryNumber}}_SubCategoryId" class="form-control" value="">
-                    <input type="text" id="{{inputNamePrefix}}SubCategory_{{subCategoryNumber}}_Name" name="{{inputNamePrefix}}SubCategory_{{subCategoryNumber}}_Name" class="form-control" placeholder="Sub Category Name" value="">
+                    <input type="text" id="{{inputNamePrefix}}SubCategory_{{subCategoryNumber}}_Name" name="{{inputNamePrefix}}SubCategory_{{subCategoryNumber}}_Name" class="form-control" placeholder="Sub Category Name" value="" autocomplete="off" maxlength="50">
                 </div>
             </div>
             <div class="col-1">
@@ -92,7 +92,7 @@
                                         <div class="col-md-11">
                                             <div class="form-group">
                                                 <input type="hidden" id="@($"{inputNamePrefix}CategoryId")" name="@($"{inputNamePrefix}CategoryId")" value="@category.BankAccountTransactionCategoryId" />
-                                                <input type="text" id="@($"{inputNamePrefix}Name")" name="@($"{inputNamePrefix}Name")" class="form-control" placeholder="Category Name" value="@category.Name">
+                                                <input type="text" id="@($"{inputNamePrefix}Name")" name="@($"{inputNamePrefix}Name")" class="form-control" placeholder="Category Name" value="@category.Name" autocomplete="off" maxlength="50">
                                             </div>
                                         </div>
                                         <div class="col-md-1">
@@ -117,7 +117,7 @@
                                             <div class="col-7">
                                                 <div class="form-group">
                                                     <input type="hidden" id="@($"{inputNamePrefix}{subCategoryInputNamePrefix}SubCategoryId")" name="@($"{inputNamePrefix}{subCategoryInputNamePrefix}SubCategoryId")" value="@subCategory.BankAccountTransactionSubCategoryId" />
-                                                    <input type="text" id="@($"{inputNamePrefix}{subCategoryInputNamePrefix}Name")" name="@($"{inputNamePrefix}{subCategoryInputNamePrefix}Name")" class="form-control" placeholder="Sub Category Name" value="@subCategory.Name">
+                                                    <input type="text" id="@($"{inputNamePrefix}{subCategoryInputNamePrefix}Name")" name="@($"{inputNamePrefix}{subCategoryInputNamePrefix}Name")" class="form-control" placeholder="Sub Category Name" value="@subCategory.Name" autocomplete="off" maxlength="50">
                                                 </div>
                                             </div>
                                             <div class="col-1">
@@ -153,7 +153,7 @@
                                         <div class="col-md-11">
                                             <div class="form-group">
                                                 <input type="hidden" id="@($"{inputNamePrefix}CategoryId")" name="@($"{inputNamePrefix}CategoryId")" value="@category.BankAccountTransactionCategoryId" />
-                                                <input type="text" id="@($"{inputNamePrefix}Name")" name="@($"{inputNamePrefix}Name")" class="form-control" placeholder="Category Name" value="@category.Name">
+                                                <input type="text" id="@($"{inputNamePrefix}Name")" name="@($"{inputNamePrefix}Name")" class="form-control" placeholder="Category Name" value="@category.Name" autocomplete="off" maxlength="50">
                                             </div>
                                         </div>
                                         <div class="col-md-1">
@@ -178,7 +178,7 @@
                                             <div class="col-7">
                                                 <div class="form-group">
                                                     <input type="hidden" id="@($"{inputNamePrefix}{subCategoryInputNamePrefix}SubCategoryId")" name="@($"{inputNamePrefix}{subCategoryInputNamePrefix}SubCategoryId")" value="@subCategory.BankAccountTransactionSubCategoryId" />
-                                                    <input type="text" id="@($"{inputNamePrefix}{subCategoryInputNamePrefix}Name")" name="@($"{inputNamePrefix}{subCategoryInputNamePrefix}Name")" class="form-control" placeholder="Sub Category Name" value="@subCategory.Name">
+                                                    <input type="text" id="@($"{inputNamePrefix}{subCategoryInputNamePrefix}Name")" name="@($"{inputNamePrefix}{subCategoryInputNamePrefix}Name")" class="form-control" placeholder="Sub Category Name" value="@subCategory.Name" autocomplete="off" maxlength="50">
                                                 </div>
                                             </div>
                                             <div class="col-1">

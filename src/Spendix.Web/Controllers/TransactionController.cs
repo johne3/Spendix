@@ -24,6 +24,7 @@ namespace Spendix.Web.Controllers
         private readonly BankAccountRepo bankAccountRepo;
         private readonly BankAccountTransactionRepo bankAccountTransactionRepo;
         private readonly BankAccountTransactionCategoryRepo bankAccountTransactionCategoryRepo;
+        private readonly BankAccountTransactionSubCategoryRepo bankAccountTransactionSubCategoryRepo;
 
         private readonly SpendixDbContext spendixDbContext;
 
@@ -33,6 +34,7 @@ namespace Spendix.Web.Controllers
             bankAccountRepo = serviceProvider.GetService<BankAccountRepo>();
             bankAccountTransactionRepo = serviceProvider.GetService<BankAccountTransactionRepo>();
             bankAccountTransactionCategoryRepo = serviceProvider.GetService<BankAccountTransactionCategoryRepo>();
+            bankAccountTransactionSubCategoryRepo = serviceProvider.GetService<BankAccountTransactionSubCategoryRepo>();
 
             spendixDbContext = serviceProvider.GetService<SpendixDbContext>();
         }
@@ -103,6 +105,15 @@ namespace Spendix.Web.Controllers
             bankAccountTransaction.Payee = values["Payee"];
             bankAccountTransaction.BankAccountTransactionCategoryId = bankAccountTransactionCategory.BankAccountTransactionCategoryId;
 
+            if (string.IsNullOrEmpty(values["SubCategory"]))
+            {
+                bankAccountTransaction.BankAccountTransactionSubCategoryId = null;
+            }
+            else
+            {
+                bankAccountTransaction.BankAccountTransactionSubCategoryId = Guid.Parse(values["SubCategory"]);
+            }
+
             if (string.Equals(bankAccountTransactionCategory.TransactionType, TransactionTypes.Payment))
             {
                 bankAccountTransaction.Amount = decimal.Negate(decimal.Parse(values["Amount"]));
@@ -116,7 +127,7 @@ namespace Spendix.Web.Controllers
 
             await spendixDbContext.SaveChangesAsync();
 
-            return RedirectToAction("Transactions", "BankAccountTransactions", new { bankAccountId = bankAccount.BankAccountId });
+            return RedirectToAction("Transactions", "Transaction", new { bankAccountId = bankAccount.BankAccountId });
         }
 
         [HttpGet, Route("/api/TransactionCategories/{transactionType}")]
@@ -129,6 +140,26 @@ namespace Spendix.Web.Controllers
                 Categories = categories.Select(x => new
                 {
                     x.BankAccountTransactionCategoryId,
+                    x.Name
+                })
+            });
+        }
+
+        [HttpGet, Route("/api/TransactionSubCategories/{categoryId}")]
+        public async Task<IActionResult> TransactionSubCategories(Guid categoryId)
+        {
+            var category = await bankAccountTransactionCategoryRepo.FindByIdWithIncludesAsync(categoryId);
+
+            if (category == null)
+            {
+                throw new Exception("Unable to find BankAccountTransactionCategory by id.");
+            }
+
+            return Ok(new
+            {
+                SubCategories = category.BankAccountTransactionSubCategories.OrderBy(x => x.Name).Select(x => new
+                {
+                    x.BankAccountTransactionSubCategoryId,
                     x.Name
                 })
             });

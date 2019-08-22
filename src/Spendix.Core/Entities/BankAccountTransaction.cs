@@ -12,6 +12,8 @@ namespace Spendix.Core.Entities
 
         public Guid BankAccountTransactionCategoryId { get; set; }
 
+        public Guid? BankAccountTransactionSubCategoryId { get; set; }
+
         public DateTime TransactionDate { get; set; }
 
         public DateTime TransactionEnteredDateUtc { get; set; }
@@ -21,5 +23,7 @@ namespace Spendix.Core.Entities
         public decimal Amount { get; set; }
 
         public BankAccountTransactionCategory BankAccountTransactionCategory { get; set; }
+
+        public BankAccountTransactionSubCategory BankAccountTransactionSubCategory { get; set; }
     }
 }
