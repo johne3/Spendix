@@ -45,18 +45,26 @@ namespace Spendix.Web.Controllers
             var bankAccount = await bankAccountRepo.FindByIdAsync(bankAccountId);
             var transactionTypes = new List<string> { TransactionTypes.Payment, TransactionTypes.Deposit };
             var transactions = (await bankAccountTransactionRepo.FindByBankAccountAsync(bankAccount))
-                .OrderByDescending(x => x.TransactionDate)
-                .ThenByDescending(x => x.TransactionEnteredDateUtc)
+                .OrderBy(x => x.TransactionDate)
+                .ThenBy(x => x.TransactionEnteredDateUtc)
                 .ToList();
 
-            var balances = await bankAccountTransactionRepo.FindBankAccountTransactionBalanceModelsByBankAccount(bankAccount);
+            var balances = new List<(BankAccountTransaction transaction, decimal balance)>();
+            var currentBalance = bankAccount.OpeningBalance;
+
+            foreach (var transaction in transactions)
+            {
+                currentBalance += transaction.Amount;
+
+                balances.Add((transaction, currentBalance));
+            }
 
             var vm = new TransactionsViewModel
             {
                 TransactionTypeSelectList = new SelectList(transactionTypes),
                 BankAccount = bankAccount,
                 Transactions = transactions,
-                TransactionBalances = balances
+                TransactionBalances = balances.OrderByDescending(x => x.transaction.TransactionDate).ThenByDescending(x => x.transaction.CreateDateUtc).ToList()
             };
 
             if (bankAccountTransactionId.HasValue)
