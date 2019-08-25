@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Spendix.Core.Entities;
 using Spendix.Core.EntityConfig;
-using Spendix.Core.Models.BankAccountTransactionRepoModels;
 
 namespace Spendix.Core
 {
@@ -21,8 +20,6 @@ namespace Spendix.Core
 
         public DbSet<UserAccount> UserAccounts { get; set; }
 
-        public DbQuery<BankAccountTransactionBalanceModel> BankAccountTransactionBalanceModels { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -32,10 +29,6 @@ namespace Spendix.Core
             modelBuilder.ApplyConfiguration(new BankAccountTransactionCategoryConfig());
             modelBuilder.ApplyConfiguration(new BankAccountTransactionSubCategoryConfig());
             modelBuilder.ApplyConfiguration(new UserAccountConfig());
-
-            var bankAccountTransactionBalanceModelBuilder = modelBuilder.Query<BankAccountTransactionBalanceModel>();
-            bankAccountTransactionBalanceModelBuilder.Property(v => v.BankAccountTransactionId).HasColumnName("BankAccountTransactionId").IsRequired();
-            bankAccountTransactionBalanceModelBuilder.Property(v => v.CurrentBalance).HasColumnName("CurrentBalance");
         }
     }
 }
