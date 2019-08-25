@@ -143,11 +143,14 @@ namespace Spendix.Web.Controllers
                     category = categories.Single(x => x.BankAccountTransactionCategoryId == Guid.Parse(categoryId));
                 }
 
-                category.Name = form[categoryNameKey];
+                if (!string.IsNullOrEmpty(form[categoryNameKey]))
+                {
+                    category.Name = form[categoryNameKey];
 
-                bankAccountTransactionCategoryRepo.PrepareEntityForCommit(category);
+                    bankAccountTransactionCategoryRepo.PrepareEntityForCommit(category);
 
-                PopulateSubCategoriesForSave(form, inputNamePrefix, category);
+                    PopulateSubCategoriesForSave(form, inputNamePrefix, category);
+                }
             }
         }
 
@@ -177,9 +180,12 @@ namespace Spendix.Web.Controllers
                     subCategory = category.BankAccountTransactionSubCategories.Single(x => x.BankAccountTransactionSubCategoryId == Guid.Parse(subCategoryId));
                 }
 
-                subCategory.Name = form[subCtaegoryNameKey];
+                if (!string.IsNullOrEmpty(form[subCtaegoryNameKey]))
+                {
+                    subCategory.Name = form[subCtaegoryNameKey];
 
-                bankAccountTransactionSubCategoryRepo.PrepareEntityForCommit(subCategory);
+                    bankAccountTransactionSubCategoryRepo.PrepareEntityForCommit(subCategory);
+                }
             }
         }
     }
