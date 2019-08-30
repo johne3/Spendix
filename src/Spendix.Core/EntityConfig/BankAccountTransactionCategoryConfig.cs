@@ -21,6 +21,7 @@ namespace Spendix.Core.EntityConfig
             builder.Property(x => x.UserAccountId).IsRequired();
             builder.Property(x => x.TransactionType).IsRequired().HasMaxLength(50);
             builder.Property(x => x.Name).IsRequired().HasMaxLength(50);
+            builder.Property(x => x.IncludeInStatistics);
 
             builder.HasOne(x => x.UserAccount).WithMany().HasForeignKey(x => x.UserAccountId);
         }
