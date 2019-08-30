@@ -14,6 +14,8 @@ namespace Spendix.Core.Entities
 
         public string Name { get; set; }
 
+        public bool IncludeInStatistics { get; set; }
+
         public UserAccount UserAccount { get; set; }
 
         public List<BankAccountTransactionSubCategory> BankAccountTransactionSubCategories { get; set; }
