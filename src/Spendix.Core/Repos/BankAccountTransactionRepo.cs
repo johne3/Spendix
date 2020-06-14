@@ -92,7 +92,9 @@ namespace Spendix.Core.Repos
             return q.Select(x => x.Amount).SumAsync();
         }
 
-        public async Task<List<(string CategoryName, decimal Amount)>> FindCategoryTotalsByDateRange(DateTime startDate, DateTime endDate, BankAccount bankAccount)
+        public async Task<List<(string CategoryName, decimal Amount)>> FindCategoryTotalsByDateRange(DateTime startDate,
+            DateTime endDate,
+            BankAccount bankAccount)
         {
             var loggedInUserAccount = loggedInUserAccountAccessor.GetLoggedInUserAccount();
 
@@ -115,13 +117,15 @@ namespace Spendix.Core.Repos
                 q = q.Where(x => x.bat.BankAccountId == bankAccount.BankAccountId);
             }
 
-            var categoryAmounts = await (from entities in q
-                                         group entities by entities.batc.BankAccountTransactionCategoryId into g
-                                         select new
-                                         {
-                                             CategoryName = g.First().batc.Name,
-                                             Amount = g.Sum(x => x.bat.Amount)
-                                         }).ToListAsync();
+            var transactions = await q.ToListAsync();
+
+            var categoryAmounts = (from entities in transactions
+                                   group entities by entities.batc.BankAccountTransactionCategoryId into g
+                                   select new
+                                   {
+                                       CategoryName = g.First().batc.Name,
+                                       Amount = g.Sum(x => x.bat.Amount)
+                                   }).ToList();
 
             return categoryAmounts.Select(x => (x.CategoryName, x.Amount)).ToList();
         }
