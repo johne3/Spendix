@@ -8,9 +8,8 @@ using Spendix.Core.Accessors;
 using Microsoft.Extensions.DependencyInjection;
 using Spendix.Core.Repos;
 using Spendix.Core;
-using Microsoft.AspNetCore.Http;
 using Spendix.Core.Entities;
-using Newtonsoft.Json.Linq;
+using System.Text.Json;
 
 namespace Spendix.Web.Controllers
 {
@@ -33,7 +32,7 @@ namespace Spendix.Web.Controllers
         public async Task<IActionResult> GetBankAccounts()
         {
             var bankAccounts = await bankAccountRepo.FindByLoggedInUserAccountAsync();
-
+            
             return Json(bankAccounts.Select(x => new
             {
                 x.BankAccountId,
@@ -45,13 +44,13 @@ namespace Spendix.Web.Controllers
         }
 
         [HttpPost, Route("")]
-        public async Task<IActionResult> SaveBankAccount([FromBody]JObject json)
+        public async Task<IActionResult> SaveBankAccount([FromBody] JsonElement json)
         {
             BankAccount bankAccount = null;
 
-            if (!string.IsNullOrEmpty(json.Value<string>("bankAccountId")))
+            if (!string.IsNullOrEmpty(json.GetProperty("bankAccountId").GetString()))
             {
-                bankAccount = await bankAccountRepo.FindByIdAsync(Guid.Parse(json.Value<string>("bankAccountId")));
+                bankAccount = await bankAccountRepo.FindByIdAsync(Guid.Parse(json.GetProperty("bankAccountId").GetString()));
             }
             else
             {
@@ -61,9 +60,9 @@ namespace Spendix.Web.Controllers
                 };
             }
 
-            bankAccount.Type = json.Value<string>("type");
-            bankAccount.Name = json.Value<string>("name");
-            bankAccount.OpeningBalance = json.Value<decimal>("openingBalance");
+            bankAccount.Type = json.GetProperty("type").GetString();
+            bankAccount.Name = json.GetProperty("name").GetString();
+            bankAccount.OpeningBalance = json.GetProperty("openingBalance").GetDecimal();
 
             bankAccountRepo.PrepareEntityForCommit(bankAccount);
             await spendixDbContext.SaveChangesAsync();
