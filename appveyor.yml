@@ -3,7 +3,7 @@
     only:
       - master
   configuration: [Release]
-  os: Visual Studio 2017
+  os: Visual Studio 2019
   version: 1.0.0-{branch}-{build}
   install:
     - cmd: cd src\Spendix.Web
