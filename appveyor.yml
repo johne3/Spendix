@@ -57,7 +57,7 @@
         appveyor_repo_tag: false       # deploy on tag push only
 -
   configuration: Debug
-  os: Visual Studio 2017
+  os: Visual Studio 2019
   version: 1.0.0.{build}
   shallow_clone: true
   install:
