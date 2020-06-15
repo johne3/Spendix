@@ -21,7 +21,6 @@
     - cmd: dotnet publish src\Spendix.Web\ -o ..\SpendixWebDeploy --configuration Release
   artifacts:
     - path: SpendixWebDeploy
-      name: SpendixWebDeploy
       type: WebDeployPackage
 
   #---------------------------------#
