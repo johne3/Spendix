@@ -45,3 +45,9 @@ jobs:
             asset_path: ./Spendix.Web.zip
             asset_name: Spendix.Web.zip
             asset_content_type: application/zip
+        - name: 'Deploy to Azure'
+          uses: azure/webapps-deploy@v2
+          with: 
+            app-name: spendix
+            publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE  }} # Define secret variable in repository settings as per action documentation
+            package: './Spendix.Web.zip'
