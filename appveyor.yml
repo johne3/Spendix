@@ -17,8 +17,8 @@
     publish_wap: true
     verbosity: minimal
   # scripts to run after tests
-  after_test:
-    - cmd: dotnet publish src\Spendix.Web\ -o ..\SpendixWebDeploy --configuration Release
+  #after_test:
+  #  - cmd: dotnet publish src\Spendix.Web\ -o ..\SpendixWebDeploy --configuration Release
   artifacts:
     - path: SpendixWebDeploy
       name: SpendixWebDeploy
