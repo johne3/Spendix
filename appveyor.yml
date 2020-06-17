@@ -6,8 +6,6 @@
   os: Visual Studio 2019
   version: 1.0.0-{branch}-{build}
   install:
-    - cmd: cd src\Spendix.Web
-    - cmd: cd ..\..
     - cmd: node --version
     - ps: dotnet --info
   before_build:
@@ -17,8 +15,8 @@
     publish_wap: true
     verbosity: minimal
   # scripts to run after tests
-  #after_test:
-  #  - cmd: dotnet publish src\Spendix.Web\ -o ..\SpendixWebDeploy --configuration Release
+  after_test:
+    - cmd: dotnet publish src\Spendix.Web\ -o SpendixWebDeploy --configuration Release
   artifacts:
     - path: SpendixWebDeploy
       name: SpendixWebDeploy
@@ -61,8 +59,7 @@
   version: 1.0.0.{build}
   shallow_clone: true
   install:
-    - cmd: cd src\Spendix.Web
-    - cmd: cd ..\..
+    - cmd: node --version
     - ps: dotnet --info
   before_build:
     - cmd: dotnet restore .\Spendix.sln
