@@ -60,6 +60,16 @@
     {
       "library": "Chart.js@2.8.0",
       "destination": "wwwroot/lib/Chart.js/"
+    },
+    {
+      "library": "bootstrap-datepicker@1.9.0",
+      "destination": "wwwroot/lib/bootstrap-datepicker/",
+      "files": [
+        "js/bootstrap-datepicker.min.js",
+        "css/bootstrap-datepicker.css",
+        "css/bootstrap-datepicker.css.map",
+        "css/bootstrap-datepicker.min.css"
+      ]
     }
   ]
 }
