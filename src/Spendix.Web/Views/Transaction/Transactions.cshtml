@@ -24,7 +24,7 @@
     <div class="col-12">
         <div class="card card-outline-info">
             <div class="card-body">
-                <h5 class="card-title">Add Transaction</h5>
+                <h6 class="card-title">Add Transaction</h6>
                 <hr>
                 <form id="transactionForm" asp-controller="Transaction" asp-action="SaveTransaction" asp-route-bankAccountId="@Model.BankAccount.BankAccountId" method="post">
                     <input type="hidden" id="BankAccountTransactionId" name="BankAccountTransactionId" value="@Model.SelectedBankAccountTransaction?.BankAccountTransactionId" />
@@ -93,7 +93,7 @@
         </div>
         <div class="card mt-4">
             <div class="card-body">
-                <h4 class="card-title">Transactions</h4>
+                <h6 class="card-title">Transactions</h6>
                 <hr>
                 <div class="table-responsive">
                     <table id="transactionsTable" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">

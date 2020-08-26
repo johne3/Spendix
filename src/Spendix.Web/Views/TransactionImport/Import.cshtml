@@ -1,0 +1,46 @@
+﻿@{
+    ViewData["Title"] = "Import";
+}
+
+@section Styles {
+}
+
+@section Scripts {
+    <environment include="Development">
+    </environment>
+    <environment exclude="Development">
+    </environment>
+}
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h4 mb-0 text-gray-800">Import Transactions</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-outline-info">
+            <div class="card-body">
+                <div class="form-body">
+                    <div class="row p-t-20">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">Bank Account</label>
+                                <select id="" name="" class="form-control custom-select"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">Source Bank</label>
+                                <select id="" name="" class="form-control custom-select"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions float-right">
+                    <button type="submit" class="btn btn-primary" id="saveButton"> <i class="fa fa-check"></i> Save</button>
+                    <button type="button" class="btn btn-secondary">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
