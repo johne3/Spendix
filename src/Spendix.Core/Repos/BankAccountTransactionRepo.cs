@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Spendix.Core.Accessors;
 using Microsoft.Extensions.DependencyInjection;
 using Spendix.Core.Constants;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Spendix.Core.Repos
 {
@@ -25,6 +26,8 @@ namespace Spendix.Core.Repos
             var q = from bat in DataContext.BankAccountTransactions
                                                 .Include(x => x.BankAccountTransactionCategory)
                                                 .Include(x => x.BankAccountTransactionSubCategory)
+                                                .Include(x => x.TransferToBankAccount)
+                                                .Include(x => x.TransferFromBankAccount)
                     where bat.BankAccountId == bankAccount.BankAccountId
                     select bat;
 

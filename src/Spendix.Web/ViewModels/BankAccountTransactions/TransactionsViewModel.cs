@@ -18,5 +18,7 @@ namespace Spendix.Web.ViewModels.BankAccountTransactions
         public List<BankAccountTransaction> Transactions { get; set; }
 
         public List<(BankAccountTransaction transaction, decimal balance)> TransactionBalances { get; set; }
+
+        public SelectList TransferToBankAccountsSelectList { get; set; }
     }
 }

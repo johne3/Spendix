@@ -9,5 +9,9 @@ namespace Spendix.Core.Constants
         public static string Payment => "Payment";
 
         public static string Deposit => "Deposit";
+
+        public static string TransferTo => "Transfer To";
+
+        public static string TransferFrom => "Transfer From";
     }
 }

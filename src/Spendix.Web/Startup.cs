@@ -27,7 +27,8 @@ namespace Spendix.Web
 
             services.AddDataAccess(Configuration);
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddRazorRuntimeCompilation();
 
             services.AddHttpContextAccessor();
 
@@ -41,7 +42,7 @@ namespace Spendix.Web
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-             if (env.IsDevelopment())
+            if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
