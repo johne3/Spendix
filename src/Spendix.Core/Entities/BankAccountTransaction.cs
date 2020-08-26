@@ -10,9 +10,11 @@ namespace Spendix.Core.Entities
 
         public Guid BankAccountId { get; set; }
 
-        public Guid BankAccountTransactionCategoryId { get; set; }
+        public Guid? BankAccountTransactionCategoryId { get; set; }
 
         public Guid? BankAccountTransactionSubCategoryId { get; set; }
+
+        public string TransactionType { get; set; }
 
         public DateTime TransactionDate { get; set; }
 
@@ -22,8 +24,16 @@ namespace Spendix.Core.Entities
 
         public decimal Amount { get; set; }
 
+        public Guid? TransferToBankAccountId { get; set; }
+
+        public Guid? TransferFromBankAccountId { get; set; }
+
         public BankAccountTransactionCategory BankAccountTransactionCategory { get; set; }
 
         public BankAccountTransactionSubCategory BankAccountTransactionSubCategory { get; set; }
+
+        public BankAccount TransferToBankAccount { get; set; }
+
+        public BankAccount TransferFromBankAccount { get; set; }
     }
 }

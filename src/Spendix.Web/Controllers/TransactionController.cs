@@ -13,6 +13,7 @@ using Spendix.Web.ViewModels.BankAccountTransactions;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Spendix.Core.Constants;
 using Spendix.Core.Entities;
+using System.Security;
 
 namespace Spendix.Web.Controllers
 {
@@ -42,8 +43,18 @@ namespace Spendix.Web.Controllers
         [HttpGet, Route("{bankAccountId}/{bankAccountTransactionId?}")]
         public async Task<IActionResult> Transactions(Guid bankAccountId, Guid? bankAccountTransactionId = null)
         {
-            var bankAccount = await bankAccountRepo.FindByIdAsync(bankAccountId);
+            var bankAccounts = await bankAccountRepo.FindByLoggedInUserAccountAsync();
+            var bankAccountsMinusCurrent = bankAccounts.Where(x => x.BankAccountId != bankAccountId).ToList();
+            var bankAccount = bankAccounts.Single(x => x.BankAccountId == bankAccountId);
+
             var transactionTypes = new List<string> { TransactionTypes.Payment, TransactionTypes.Deposit };
+
+            if (bankAccountsMinusCurrent.Count >= 1)
+            {
+                transactionTypes.Add(TransactionTypes.TransferTo);
+                transactionTypes.Add(TransactionTypes.TransferFrom);
+            }
+
             var transactions = (await bankAccountTransactionRepo.FindByBankAccountAsync(bankAccount))
                 .OrderBy(x => x.TransactionDate)
                 .ThenBy(x => x.TransactionEnteredDateUtc)
@@ -64,7 +75,8 @@ namespace Spendix.Web.Controllers
                 TransactionTypeSelectList = new SelectList(transactionTypes),
                 BankAccount = bankAccount,
                 Transactions = transactions,
-                TransactionBalances = balances.OrderByDescending(x => x.transaction.TransactionDate).ThenByDescending(x => x.transaction.CreateDateUtc).ToList()
+                TransactionBalances = balances.OrderByDescending(x => x.transaction.TransactionDate).ThenByDescending(x => x.transaction.CreateDateUtc).ToList(),
+                TransferToBankAccountsSelectList = new SelectList(bankAccountsMinusCurrent, "BankAccountId", "Name")
             };
 
             if (bankAccountTransactionId.HasValue)
@@ -92,7 +104,12 @@ namespace Spendix.Web.Controllers
                 throw new Exception("Bank Account not found by id.");
             }
 
-            var bankAccountTransactionCategory = await bankAccountTransactionCategoryRepo.FindByIdAsync(Guid.Parse(values["Category"]));
+            if (!string.Equals(values["TransactionType"], TransactionTypes.TransferTo) &&
+                !string.Equals(values["TransactionType"], TransactionTypes.TransferFrom) &&
+                string.IsNullOrEmpty(values["Category"]))
+            {
+                throw new Exception("Category is required for payments or deposits.");
+            }
 
             BankAccountTransaction bankAccountTransaction = null;
 
@@ -108,9 +125,32 @@ namespace Spendix.Web.Controllers
                 };
             }
 
+            if (string.Equals(values["TransactionType"], TransactionTypes.TransferTo, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(values["TransactionType"], TransactionTypes.TransferFrom, StringComparison.OrdinalIgnoreCase))
+            {
+                PopulateTransferTransaction(bankAccount, bankAccountTransaction, values);
+            }
+            else
+            {
+                await PopulatePaymentOrDepositTransaction(bankAccountTransaction, values);
+            }
+
+            bankAccountTransaction.TransactionType = values["TransactionType"];
             bankAccountTransaction.TransactionDate = DateTime.Parse(values["Date"]);
             bankAccountTransaction.TransactionEnteredDateUtc = DateTime.UtcNow;
+
+            bankAccountTransactionRepo.PrepareEntityForCommit(bankAccountTransaction);
+
+            await spendixDbContext.SaveChangesAsync();
+
+            return RedirectToAction("Transactions", "Transaction", new { bankAccountId = bankAccount.BankAccountId });
+        }
+
+        private async Task PopulatePaymentOrDepositTransaction(BankAccountTransaction bankAccountTransaction, IFormCollection values)
+        {
             bankAccountTransaction.Payee = values["Payee"];
+
+            var bankAccountTransactionCategory = await bankAccountTransactionCategoryRepo.FindByIdAsync(Guid.Parse(values["Category"]));
             bankAccountTransaction.BankAccountTransactionCategoryId = bankAccountTransactionCategory.BankAccountTransactionCategoryId;
 
             if (string.IsNullOrEmpty(values["SubCategory"]))
@@ -122,7 +162,7 @@ namespace Spendix.Web.Controllers
                 bankAccountTransaction.BankAccountTransactionSubCategoryId = Guid.Parse(values["SubCategory"]);
             }
 
-            if (string.Equals(bankAccountTransactionCategory.TransactionType, TransactionTypes.Payment))
+            if (string.Equals(values["TransactionType"], TransactionTypes.Payment, StringComparison.OrdinalIgnoreCase))
             {
                 bankAccountTransaction.Amount = decimal.Negate(decimal.Parse(values["Amount"]));
             }
@@ -130,12 +170,44 @@ namespace Spendix.Web.Controllers
             {
                 bankAccountTransaction.Amount = decimal.Parse(values["Amount"]);
             }
+        }
 
-            bankAccountTransactionRepo.PrepareEntityForCommit(bankAccountTransaction);
+        private void PopulateTransferTransaction(BankAccount bankAccount, BankAccountTransaction bankAccountTransaction, IFormCollection values)
+        {
+            if (string.Equals(values["TransactionType"], TransactionTypes.TransferTo))
+            {
+                bankAccountTransaction.Amount = decimal.Negate(decimal.Parse(values["Amount"]));
+                bankAccountTransaction.TransferToBankAccountId = Guid.Parse(values["TransferBankAccountId"]);
 
-            await spendixDbContext.SaveChangesAsync();
+                var transferToTransaction = new BankAccountTransaction
+                {
+                    BankAccountId = Guid.Parse(values["TransferBankAccountId"]),
+                    TransactionType = TransactionTypes.TransferFrom,
+                    TransactionDate = DateTime.Parse(values["Date"]),
+                    Amount = decimal.Parse(values["Amount"]),
+                    TransactionEnteredDateUtc = DateTime.UtcNow,
+                    TransferFromBankAccountId = bankAccount.BankAccountId
+                };
 
-            return RedirectToAction("Transactions", "Transaction", new { bankAccountId = bankAccount.BankAccountId });
+                bankAccountTransactionRepo.PrepareEntityForCommit(transferToTransaction);
+            }
+            else
+            {
+                bankAccountTransaction.Amount = decimal.Parse(values["Amount"]);
+                bankAccountTransaction.TransferFromBankAccountId = Guid.Parse(values["TransferBankAccountId"]);
+
+                var transferFromTransaction = new BankAccountTransaction
+                {
+                    BankAccountId = Guid.Parse(values["TransferBankAccountId"]),
+                    TransactionType = TransactionTypes.TransferTo,
+                    TransactionDate = DateTime.Parse(values["Date"]),
+                    Amount = decimal.Parse(values["Amount"]),
+                    TransactionEnteredDateUtc = DateTime.UtcNow,
+                    TransferToBankAccountId = bankAccount.BankAccountId
+                };
+
+                bankAccountTransactionRepo.PrepareEntityForCommit(transferFromTransaction);
+            }
         }
 
         [HttpGet, Route("/api/TransactionCategories/{transactionType}")]

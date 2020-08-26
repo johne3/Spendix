@@ -46,14 +46,22 @@
 function loadCategories() {
     var transactionType = $('#TransactionType').val();
 
-    $.get('/api/TransactionCategories/' + transactionType, function (data) {
-        $('#Category').empty();
-        $('#Category').append('<option value="">Select One</option>');
+    if (transactionType === 'Payment' || transactionType === 'Deposit') {
+        $('#transferRow').hide();
+        $('#paymentDepositRow').show();
 
-        $.each(data.categories, function (index, category) {
-            $('#Category').append('<option value="' + category.bankAccountTransactionCategoryId + '">' + category.name + '</option>');
+        $.get('/api/TransactionCategories/' + transactionType, function (data) {
+            $('#Category').empty();
+            $('#Category').append('<option value="">Select One</option>');
+
+            $.each(data.categories, function (index, category) {
+                $('#Category').append('<option value="' + category.bankAccountTransactionCategoryId + '">' + category.name + '</option>');
+            });
         });
-    });
+    } else {
+        $('#paymentDepositRow').hide();
+        $('#transferRow').show();
+    }
 }
 
 function loadSubCategries() {
