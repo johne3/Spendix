@@ -1,6 +1,7 @@
 ﻿@model Spendix.Web.ViewModels.BankAccountTransactions.TransactionsViewModel
 @{
     ViewData["Title"] = Model.BankAccount.Name;
+    ViewData["PageHeader"] = Model.BankAccount.Name;
 }
 
 @section Styles {
@@ -14,11 +15,6 @@
         <script src="~/js/views/transaction/transactions.js" asp-append-version="true"></script>
     </environment>
 }
-
-<div class="d-sm-flex align-items-center justify-content-between mb-2">
-    <h1 class="h4 mb-0 text-gray-800">@Model.BankAccount.Name</h1>
-</div>
-
 
 <div class="row">
     <div class="col-12">
