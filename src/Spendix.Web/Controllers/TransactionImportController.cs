@@ -12,6 +12,7 @@ using Spendix.Core.Constants;
 using Microsoft.AspNetCore.Http;
 using Spendix.Web.ResponseModels.TransactionImport;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Spendix.Web.Controllers
 {
@@ -83,14 +84,15 @@ namespace Spendix.Web.Controllers
                         continue;
                     }
 
-                    var items = line.Split(",");
+                    var parser = new Regex(",(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))");
+                    var items = parser.Split(line);
 
-                    var type = items[3];
+                    //var type = items[3];
 
                     models.Add(new ProcessImportResponseModel
                     {
                         Date = DateTime.Parse(items[0]).ToShortDateString(),
-                        Payee = items[4],
+                        Payee = items[4].Replace("\"", ""),
                         Amount = items[2]
                     });
 
