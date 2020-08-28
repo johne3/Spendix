@@ -12,5 +12,9 @@ namespace Spendix.Web.ResponseModels.TransactionImport
         public string Payee { get; set; }
 
         public string Amount { get; set; }
+
+        public string TransactionType { get; set; }
+
+        public bool IsPaymentTransactionType { get; set; }
     }
 }

@@ -20,22 +20,41 @@
 
     <script id="imported-transaction-row" type="text/x-handlebars-template">
         <tr>
-            <td>{{transaction.date}}</td>
             <td>
-                <input type="text" id="" name="" class="form-control" placeholder="Payee" maxlength="200" autocomplete="off" value="{{transaction.payee}}">
+                <input type="hidden" name="Date_{{index}}" id="Date_{{index}}" value="{{transaction.date}}" />
+                <input type="hidden" name="TransactionType_{{index}}" id="TransactionType_{{index}}" value="{{transaction.transactionType}}" />
+                {{transaction.date}}
             </td>
             <td>
-                <select class="form-control custom-select" id="Category" name="Category">
+                <input type="text" id="Payee_{{index}}" name="Payee_{{index}}" class="form-control" placeholder="Payee" maxlength="200" autocomplete="off" value="{{transaction.payee}}">
+            </td>
+            <td>
+                {{#if transaction.isPaymentTransactionType}}
+                <select id="CategoryId_{{index}}" name="CategoryId_{{index}}" class="form-control custom-select categorySelect">
+                    <option selected value="">Select One</option>
+                    @foreach (var category in Model.PaymentTransactionCategories)
+                    {
+                        <option value="@category.BankAccountTransactionCategoryId">@category.Name</option>
+                    }
+                </select>
+                {{else}}
+                <select id="CategoryId_{{index}}" name="CategoryId_{{index}}" class="form-control custom-select categorySelect">
+                    <option selected value="">Select One</option>
+                    @foreach (var category in Model.DepositTransactionCategories)
+                    {
+                        <option value="@category.BankAccountTransactionCategoryId">@category.Name</option>
+                    }
+                </select>
+                {{/if}}
+            </td>
+            <td>
+                <select class="form-control custom-select subCategorySelect" id="SubCategoryId_{{index}}" name="SubCategoryId_{{index}}">
                     <option value="">Select One</option>
                 </select>
             </td>
             <td>
-                <select class="form-control custom-select" id="SubCategory" name="SubCategory">
-                    <option value="">Select One</option>
-                </select>
-            </td>
-            <td>
-                <input type="text" readonly id="" name="" class="form-control" placeholder="Amount" maxlength="200" autocomplete="off" value="{{transaction.amount}}">
+                <input type="hidden" id="Amount_{{index}}" name="Amount_{{index}}" class="form-control" placeholder="Amount" value="{{transaction.amount}}">
+                {{transaction.amount}}
             </td>
         </tr>
     </script>
@@ -79,29 +98,33 @@
     </div>
 </div>
 
-<div class="row" id="importedTransactionsRow" style="display:none;">
-    <div class="col-md-12">
-        <div class="card card-outline-info">
-            <div class="card-body px-0 pt-0">
-                <div class="table-responsive">
-                    <table id="transactionsTable" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
-                        <thead>
-                            <tr>
-                                <th style="width:100px;">Date</th>
-                                <th>Payee</th>
-                                <th>Category</th>
-                                <th>Sub Category</th>
-                                <th style="width:125px;">Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="form-actions float-right">
-                    <button type="button" class="btn btn-primary" id="saveImport"> <i class="fa fa-check"></i> Save</button>
+<form asp-controller="TransactionImport" asp-action="Import" method="post" id="transactionImportForm">
+    <input type="hidden" id="BankAccountId" name="BankAccountId" value="" />
+
+    <div class="row" id="importedTransactionsRow" style="display:none;">
+        <div class="col-md-12">
+            <div class="card card-outline-info">
+                <div class="card-body px-0 pt-0">
+                    <div class="table-responsive">
+                        <table id="transactionsTable" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th style="width:100px;">Date</th>
+                                    <th>Payee</th>
+                                    <th>Category</th>
+                                    <th>Sub Category</th>
+                                    <th style="width:125px;">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="form-actions float-right">
+                        <button type="submit" class="btn btn-primary" id="saveImport"> <i class="fa fa-check"></i> Save</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</form>

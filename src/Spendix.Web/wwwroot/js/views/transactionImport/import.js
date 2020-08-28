@@ -4,6 +4,8 @@ $(document).ready(function () {
     var importedTransactionRowTemplateHtml = $('#imported-transaction-row').html();
     importedTransactionRowTemplate = Handlebars.compile(importedTransactionRowTemplateHtml);
 
+    initValidation();
+
     $('#ImportFile').on('change', function () {
         var file = $(this)[0].files[0];
         $('#ImportFileLabel').text(file.name);
@@ -42,16 +44,59 @@ $(document).ready(function () {
             });
         }
     });
+
+    $(document).on('change', '.categorySelect', function () {
+        var categoryId = $(this).val();
+        var subCategorySelect = $(this).parent().parent().find('.subCategorySelect');
+
+        $.get('/api/TransactionSubCategories/' + categoryId, function (data) {
+            subCategorySelect.empty();
+            subCategorySelect.append('<option value="">Select One</option>');
+
+            $.each(data.subCategories, function (index, subCategory) {
+                subCategorySelect.append('<option value="' + subCategory.bankAccountTransactionSubCategoryId + '">' + subCategory.name + '</option>');
+            });
+        });
+    });
 });
+
+function initValidation() {
+    $('#transactionImportForm').validate({
+        rules: {
+        },
+        messages: {
+        }
+    });
+}
+
+function addTransactionImportValidation(index) {
+    $("#Payee_" + index).rules("add", {
+        required: true,
+        messages: {
+            required: 'Payee is Required.'
+        }
+    });
+
+    $("#CategoryId_" + index).rules("add", {
+        required: true,
+        messages: {
+            required: 'Category is Required.'
+        }
+    });
+}
 
 function renderImportedTransactions(result) {
     $('#transactionsTable tbody').empty();
     $('#importedTransactionsRow').show();
     $('#processImportRow').hide();
 
+    $('#transactionImportForm #BankAccountId').val(result.bankAccountId);
+
     $.each(result.transactions, function (index, value) {
         var html = importedTransactionRowTemplate({ index: index, transaction: value });
         $('#transactionsTable tbody').append(html);
+
+        addTransactionImportValidation(index);
     });
 }
 
