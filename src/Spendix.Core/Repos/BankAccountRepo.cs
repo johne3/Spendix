@@ -39,5 +39,18 @@ namespace Spendix.Core.Repos
 
             return q.ToListAsync();
         }
+
+        public async Task<int> FindNextSortOrderAsync()
+        {
+            var userAccount = loggedInUserAccountAccessor.GetLoggedInUserAccount();
+
+            var q = from ba in DataContext.BankAccounts
+                    where ba.UserAccountId == userAccount.UserAccountId
+                    select (int?)ba.SortOrder;
+
+            var max = await q.MaxAsync() ?? 0;
+
+            return max + 10;
+        }
     }
 }

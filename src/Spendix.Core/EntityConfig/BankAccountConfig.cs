@@ -22,6 +22,7 @@ namespace Spendix.Core.EntityConfig
             builder.Property(x => x.Name).IsRequired().HasMaxLength(50);
             builder.Property(x => x.Type).IsRequired().HasMaxLength(50);
             builder.Property(x => x.OpeningBalance).IsRequired().HasColumnType("decimal(18, 2)");
+            builder.Property(x => x.SortOrder).IsRequired();
         }
     }
 }

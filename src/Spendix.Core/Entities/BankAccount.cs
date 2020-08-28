@@ -15,5 +15,7 @@ namespace Spendix.Core.Entities
         public string Type { get; set; }
 
         public decimal OpeningBalance { get; set; }
+
+        public int SortOrder { get; set; }
     }
 }

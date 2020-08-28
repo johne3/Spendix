@@ -46,8 +46,8 @@ namespace Spendix.Web.Controllers
         public async Task<IActionResult> Import()
         {
             var bankAccounts = (await bankAccountRepo.FindByLoggedInUserAccountAsync())
-                                .OrderBy(x => x.Name)
-                                .ToList();
+                                        .OrderBy(x => x.SortOrder)
+                                        .ToList();
 
             var supportedBankImportSources = BankImportSources.AllBankImportSources;
 

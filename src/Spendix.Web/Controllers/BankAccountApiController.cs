@@ -31,8 +31,10 @@ namespace Spendix.Web.Controllers
         [HttpGet, Route("")]
         public async Task<IActionResult> GetBankAccounts()
         {
-            var bankAccounts = await bankAccountRepo.FindByLoggedInUserAccountAsync();
-            
+            var bankAccounts = (await bankAccountRepo.FindByLoggedInUserAccountAsync())
+                                        .OrderBy(x => x.SortOrder)
+                                        .ToList();
+
             return Json(bankAccounts.Select(x => new
             {
                 x.BankAccountId,
@@ -40,7 +42,7 @@ namespace Spendix.Web.Controllers
                 x.Type,
                 x.OpeningBalance,
                 transactionsUrl = Url.Action("Transactions", "Transaction", new { x.BankAccountId })
-            }).OrderBy(x => x.Name));
+            }));
         }
 
         [HttpPost, Route("")]
@@ -63,6 +65,7 @@ namespace Spendix.Web.Controllers
             bankAccount.Type = json.GetProperty("type").GetString();
             bankAccount.Name = json.GetProperty("name").GetString();
             bankAccount.OpeningBalance = json.GetProperty("openingBalance").GetDecimal();
+            bankAccount.SortOrder = await bankAccountRepo.FindNextSortOrderAsync();
 
             bankAccountRepo.PrepareEntityForCommit(bankAccount);
             await spendixDbContext.SaveChangesAsync();
@@ -71,7 +74,7 @@ namespace Spendix.Web.Controllers
         }
 
         [HttpDelete, Route("")]
-        public async Task<IActionResult> DeleteBankAccount([FromBody]Guid bankAccountId)
+        public async Task<IActionResult> DeleteBankAccount([FromBody] Guid bankAccountId)
         {
             var bankAccount = await bankAccountRepo.FindByIdAsync(bankAccountId);
 

@@ -43,7 +43,9 @@ namespace Spendix.Web.Controllers
         [HttpGet, Route("{bankAccountId}/{bankAccountTransactionId?}")]
         public async Task<IActionResult> Transactions(Guid bankAccountId, Guid? bankAccountTransactionId = null)
         {
-            var bankAccounts = await bankAccountRepo.FindByLoggedInUserAccountAsync();
+            var bankAccounts = (await bankAccountRepo.FindByLoggedInUserAccountAsync())
+                                        .OrderBy(x => x.SortOrder)
+                                        .ToList();
             var bankAccountsMinusCurrent = bankAccounts.Where(x => x.BankAccountId != bankAccountId).ToList();
             var bankAccount = bankAccounts.Single(x => x.BankAccountId == bankAccountId);
 
