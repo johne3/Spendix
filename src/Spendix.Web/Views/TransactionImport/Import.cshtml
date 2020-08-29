@@ -20,6 +20,9 @@
 
     <script id="imported-transaction-row" type="text/x-handlebars-template">
         <tr>
+            <td style="text-align:center;">
+                <input type="checkbox" name="Save_{{index}}" id="Save_{{index}}" value="true" checked />
+            </td>
             <td>
                 <input type="hidden" name="Date_{{index}}" id="Date_{{index}}" value="{{transaction.date}}" />
                 <input type="hidden" name="TransactionType_{{index}}" id="TransactionType_{{index}}" value="{{transaction.transactionType}}" />
@@ -109,6 +112,7 @@
                         <table id="transactionsTable" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
+                                    <th style="width:15px;">Save</th>
                                     <th style="width:100px;">Date</th>
                                     <th>Payee</th>
                                     <th>Category</th>

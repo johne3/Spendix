@@ -53,6 +53,7 @@ namespace Spendix.Web.Controllers
 
             var userAccount = loggedInUserAccountAccessor.GetLoggedInUserAccount();
             var categories = await bankAccountTransactionCategoryRepo.FindByUserAccountAsync(userAccount);
+
             var paymentCategories = categories.Where(x => x.TransactionType == TransactionTypes.Payment)
                                               .OrderBy(x => x.Name)
                                               .ToList();
@@ -79,6 +80,11 @@ namespace Spendix.Web.Controllers
 
             foreach (var number in transactionNumbers)
             {
+                if (string.IsNullOrEmpty(values[$"Save_{number}"]))
+                {
+                    continue;
+                }
+
                 var transaction = new BankAccountTransaction
                 {
                     BankAccountId = bankAccountId,
