@@ -57,12 +57,14 @@ namespace Spendix.Web.Controllers
             var paymentCategories = categories.Where(x => x.TransactionType == TransactionTypes.Payment)
                                               .OrderBy(x => x.Name)
                                               .ToList();
+
             var depositCategories = categories.Where(x => x.TransactionType == TransactionTypes.Deposit)
                                               .OrderBy(x => x.Name)
                                               .ToList();
 
             var vm = new ImportViewModel
             {
+                BankAccounts = bankAccounts,
                 BankAccountSelectList = new SelectList(bankAccounts, "BankAccountId", "Name"),
                 BankImportSourceSelectList = new SelectList(supportedBankImportSources),
                 PaymentTransactionCategories = paymentCategories,
@@ -132,11 +134,12 @@ namespace Spendix.Web.Controllers
         public async Task<IActionResult> ProcessImport(IFormCollection values)
         {
             var bankAccountId = Guid.Parse(values["BankAccountId"]);
+            var bankAccount = await bankAccountRepo.FindByIdAsync(bankAccountId);
+
             var bankImportSource = values["BankImportSource"];
             var file = values.Files.First();
 
             var userAccount = loggedInUserAccountAccessor.GetLoggedInUserAccount();
-            var categories = await bankAccountTransactionCategoryRepo.FindByUserAccountAsync(userAccount);
 
             List<ProcessImportResponseModel> transactions = null;
 
@@ -149,6 +152,7 @@ namespace Spendix.Web.Controllers
             {
                 success = true,
                 bankAccountId,
+                bankAccountName = bankAccount.Name,
                 transactions
             });
         }

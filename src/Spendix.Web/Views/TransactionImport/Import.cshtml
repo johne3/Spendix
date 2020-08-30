@@ -35,6 +35,12 @@
                 {{#if transaction.isPaymentTransactionType}}
                 <select id="CategoryId_{{index}}" name="CategoryId_{{index}}" class="form-control custom-select categorySelect">
                     <option selected value="">Select One</option>
+                    @*Prepend transfer options at the top*@
+                    @foreach (var bankAccount in Model.BankAccounts)
+                    {
+                        <option value="TransferTo_@bankAccount.BankAccountId">Transfer to @bankAccount.Name</option>
+                    }
+
                     @foreach (var category in Model.PaymentTransactionCategories)
                     {
                         <option value="@category.BankAccountTransactionCategoryId">@category.Name</option>
@@ -43,6 +49,12 @@
                 {{else}}
                 <select id="CategoryId_{{index}}" name="CategoryId_{{index}}" class="form-control custom-select categorySelect">
                     <option selected value="">Select One</option>
+                    @*Prepend transfer options at the top*@
+                    @foreach (var bankAccount in Model.BankAccounts)
+                    {
+                        <option value="TransferFrom_@bankAccount.BankAccountId">Transfer from @bankAccount.Name</option>
+                    }
+
                     @foreach (var category in Model.DepositTransactionCategories)
                     {
                         <option value="@category.BankAccountTransactionCategoryId">@category.Name</option>
@@ -108,6 +120,7 @@
         <div class="col-md-12">
             <div class="card card-outline-info">
                 <div class="card-body px-0 pt-0">
+                    <h5 class="card-title m-2" id="importTitle"></h5>
                     <div class="table-responsive">
                         <table id="transactionsTable" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
                             <thead>

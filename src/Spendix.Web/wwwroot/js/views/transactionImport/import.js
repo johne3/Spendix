@@ -47,16 +47,19 @@ $(document).ready(function () {
 
     $(document).on('change', '.categorySelect', function () {
         var categoryId = $(this).val();
+
         var subCategorySelect = $(this).parent().parent().find('.subCategorySelect');
+        subCategorySelect.empty();
+        subCategorySelect.append('<option value="">Select One</option>');
 
-        $.get('/api/TransactionSubCategories/' + categoryId, function (data) {
-            subCategorySelect.empty();
-            subCategorySelect.append('<option value="">Select One</option>');
-
-            $.each(data.subCategories, function (index, subCategory) {
-                subCategorySelect.append('<option value="' + subCategory.bankAccountTransactionSubCategoryId + '">' + subCategory.name + '</option>');
+        //Don't try to get subcategories for transfers
+        if (!categoryId.startsWith('TransferTo_') && !categoryId.startsWith('TransferFrom_')) {
+            $.get('/api/TransactionSubCategories/' + categoryId, function (data) {
+                $.each(data.subCategories, function (index, subCategory) {
+                    subCategorySelect.append('<option value="' + subCategory.bankAccountTransactionSubCategoryId + '">' + subCategory.name + '</option>');
+                });
             });
-        });
+        }
     });
 });
 
@@ -87,6 +90,8 @@ function addTransactionImportValidation(index) {
 
 function renderImportedTransactions(result) {
     $('#transactionsTable tbody').empty();
+    $('#importTitle').text(result.bankAccountName + ' Transaction Import');
+
     $('#importedTransactionsRow').show();
     $('#processImportRow').hide();
 
@@ -95,6 +100,10 @@ function renderImportedTransactions(result) {
     $.each(result.transactions, function (index, value) {
         var html = importedTransactionRowTemplate({ index: index, transaction: value });
         $('#transactionsTable tbody').append(html);
+
+        //Remove transfer options for selected bank account
+        $('#CategoryId_' + index + ' option[value="TransferTo_' + result.bankAccountId + '"]').remove();
+        $('#CategoryId_' + index + ' option[value="TransferFrom_' + result.bankAccountId + '"]').remove();
 
         addTransactionImportValidation(index);
     });

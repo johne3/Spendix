@@ -9,6 +9,8 @@ namespace Spendix.Web.ViewModels.TransactionImport
 {
     public class ImportViewModel
     {
+        public List<BankAccount> BankAccounts { get; set; }
+
         public SelectList BankAccountSelectList { get; set; }
 
         public SelectList BankImportSourceSelectList { get; set; }
