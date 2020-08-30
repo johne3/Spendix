@@ -78,7 +78,10 @@ namespace Spendix.Web.Controllers
         public async Task<IActionResult> Import(IFormCollection values)
         {
             var bankAccountId = Guid.Parse(values["BankAccountId"]);
+            var bankAccount = await bankAccountRepo.FindByIdAsync(bankAccountId);
             var transactionNumbers = GetNumbersFromFormKeys("Date_", values);
+
+            var transactionEnteredDateUtc = DateTime.UtcNow;
 
             foreach (var number in transactionNumbers)
             {
@@ -90,17 +93,67 @@ namespace Spendix.Web.Controllers
                 var transaction = new BankAccountTransaction
                 {
                     BankAccountId = bankAccountId,
-                    BankAccountTransactionCategoryId = Guid.Parse(values[$"CategoryId_{number}"]),
                     TransactionType = values[$"TransactionType_{number}"],
                     TransactionDate = DateTime.Parse(values[$"Date_{number}"]),
-                    TransactionEnteredDateUtc = DateTime.UtcNow,
+                    TransactionEnteredDateUtc = transactionEnteredDateUtc,
                     Payee = values[$"Payee_{number}"],
                     Amount = decimal.Parse(values[$"Amount_{number}"])
                 };
 
-                if (!string.IsNullOrEmpty(values[$"SubCategoryId_{number}"]))
+                var category = values[$"CategoryId_{number}"].ToString();
+
+                if (category.StartsWith("TransferTo_"))
                 {
-                    transaction.BankAccountTransactionSubCategoryId = Guid.Parse(values[$"SubCategoryId_{number}"]);
+                    var transferToBankAccountId = Guid.Parse(category.Replace("TransferTo_", ""));
+
+                    var transferTransaction = new BankAccountTransaction
+                    {
+                        BankAccountId = transferToBankAccountId,
+                        TransactionType = TransactionTypes.TransferTo,
+                        TransactionDate = DateTime.Parse(values[$"Date_{number}"]),
+                        TransactionEnteredDateUtc = transactionEnteredDateUtc,
+                        Payee = null,
+                        Amount = decimal.Negate(decimal.Parse(values[$"Amount_{number}"])),
+                        TransferFromBankAccountId = bankAccountId,
+                        TransferFromBankAccount = bankAccount
+                    };
+
+                    transaction.Payee = null;
+                    transaction.TransactionType = TransactionTypes.TransferFrom;
+                    transaction.TransferToBankAccountId = transferToBankAccountId;
+
+                    bankAccountTransactionRepo.PrepareEntityForCommit(transferTransaction);
+                }
+                else if (category.StartsWith("TransferFrom_"))
+                {
+                    var transferFromBankAccountId = Guid.Parse(category.Replace("TransferFrom_", ""));
+
+                    var transferTransaction = new BankAccountTransaction
+                    {
+                        BankAccountId = transferFromBankAccountId,
+                        TransactionType = TransactionTypes.TransferFrom,
+                        TransactionDate = DateTime.Parse(values[$"Date_{number}"]),
+                        TransactionEnteredDateUtc = transactionEnteredDateUtc,
+                        Payee = null,
+                        Amount = decimal.Negate(decimal.Parse(values[$"Amount_{number}"])),
+                        TransferFromBankAccountId = bankAccountId,
+                        TransferToBankAccount = bankAccount
+                    };
+
+                    transaction.Payee = null;
+                    transaction.TransactionType = TransactionTypes.TransferTo;
+                    transaction.TransferFromBankAccountId = transferFromBankAccountId;
+
+                    bankAccountTransactionRepo.PrepareEntityForCommit(transferTransaction);
+                }
+                else
+                {
+                    transaction.BankAccountTransactionCategoryId = Guid.Parse(values[$"CategoryId_{number}"]);
+
+                    if (!string.IsNullOrEmpty(values[$"SubCategoryId_{number}"]))
+                    {
+                        transaction.BankAccountTransactionSubCategoryId = Guid.Parse(values[$"SubCategoryId_{number}"]);
+                    }
                 }
 
                 bankAccountTransactionRepo.PrepareEntityForCommit(transaction);
@@ -108,7 +161,7 @@ namespace Spendix.Web.Controllers
 
             await spendixDbContext.SaveChangesAsync();
 
-            return RedirectToAction("Dashboard", "Home");
+            return SetAlertMessageAndRedirect("Dashboard", "Home", "Transaction successfully imported!", Models.AlertMessageType.Success);
         }
 
         private List<int> GetNumbersFromFormKeys(string prefix, IFormCollection values)
