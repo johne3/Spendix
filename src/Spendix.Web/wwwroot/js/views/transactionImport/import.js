@@ -52,8 +52,16 @@ $(document).ready(function () {
         subCategorySelect.empty();
         subCategorySelect.append('<option value="">Select One</option>');
 
+        if (categoryId.startsWith('TransferTo_') || categoryId.startsWith('TransferFrom_')) {
+            subCategorySelect.attr('readonly', 'readonly');
+            subCategorySelect.attr('disabled', 'disabled');
+        }
+
         //Don't try to get subcategories for transfers
         if (!categoryId.startsWith('TransferTo_') && !categoryId.startsWith('TransferFrom_')) {
+            subCategorySelect.removeAttr('readonly');
+            subCategorySelect.removeAttr('disabled');
+
             $.get('/api/TransactionSubCategories/' + categoryId, function (data) {
                 $.each(data.subCategories, function (index, subCategory) {
                     subCategorySelect.append('<option value="' + subCategory.bankAccountTransactionSubCategoryId + '">' + subCategory.name + '</option>');
@@ -73,15 +81,15 @@ function initValidation() {
 }
 
 function addTransactionImportValidation(index) {
-    $("#Payee_" + index).rules("add", {
+    $('#Payee_' + index).rules('add', {
         required: true,
         messages: {
             required: 'Payee is Required.'
         }
     });
 
-    $("#CategoryId_" + index).rules("add", {
-        required: true,
+    $('#CategoryId_' + index).rules('add', {
+        required: '#Save_' + index + ':checked',
         messages: {
             required: 'Category is Required.'
         }
