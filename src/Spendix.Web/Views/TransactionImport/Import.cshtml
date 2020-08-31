@@ -29,7 +29,7 @@
                 {{transaction.date}}
             </td>
             <td>
-                <input type="text" id="Payee_{{index}}" name="Payee_{{index}}" class="form-control" placeholder="Payee" maxlength="200" autocomplete="off" value="{{transaction.payee}}">
+                <input type="text" id="Payee_{{index}}" name="Payee_{{index}}" class="form-control payeeTextBox" placeholder="Payee" maxlength="200" autocomplete="off" value="{{transaction.payee}}" data-original-value="{{transaction.payee}}">
             </td>
             <td>
                 {{#if transaction.isPaymentTransactionType}}
