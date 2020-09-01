@@ -35,3 +35,7 @@ b, strong {
     color: #FFFFFF;
     text-decoration: none;
 }
+
+label.error {
+    font-size: .75rem;
+}

@@ -1,0 +1,147 @@
+﻿@model Spendix.Web.ViewModels.TransactionImport.ImportViewModel
+
+@{
+    ViewData["Title"] = "Import";
+    ViewData["PageHeader"] = "Import Transactions";
+}
+
+@section Styles {
+}
+
+@section Scripts {
+    <partial name="_HandlebarsScripts" />
+
+    <environment include="Development">
+        <script src="~/js/views/transactionImport/import.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/views/transactionImport/import.js" asp-append-version="true"></script>
+    </environment>
+
+    <script id="imported-transaction-row" type="text/x-handlebars-template">
+        <tr>
+            <td style="text-align:center;">
+                <input type="checkbox" name="Save_{{index}}" id="Save_{{index}}" value="true" checked />
+            </td>
+            <td>
+                <input type="hidden" name="Date_{{index}}" id="Date_{{index}}" value="{{transaction.date}}" />
+                <input type="hidden" name="TransactionType_{{index}}" id="TransactionType_{{index}}" value="{{transaction.transactionType}}" />
+                {{transaction.date}}
+            </td>
+            <td>
+                <input type="text" id="Payee_{{index}}" name="Payee_{{index}}" class="form-control payeeTextBox" placeholder="Payee" maxlength="200" autocomplete="off" value="{{transaction.payee}}" data-original-value="{{transaction.payee}}">
+            </td>
+            <td>
+                {{#if transaction.isPaymentTransactionType}}
+                <select id="CategoryId_{{index}}" name="CategoryId_{{index}}" class="form-control custom-select categorySelect">
+                    <option selected value="">Select One</option>
+                    @*Prepend transfer options at the top*@
+                    @foreach (var bankAccount in Model.BankAccounts)
+                    {
+                        <option value="TransferTo_@bankAccount.BankAccountId">Transfer to @bankAccount.Name</option>
+                    }
+
+                    @foreach (var category in Model.PaymentTransactionCategories)
+                    {
+                        <option value="@category.BankAccountTransactionCategoryId">@category.Name</option>
+                    }
+                </select>
+                {{else}}
+                <select id="CategoryId_{{index}}" name="CategoryId_{{index}}" class="form-control custom-select categorySelect">
+                    <option selected value="">Select One</option>
+                    @*Prepend transfer options at the top*@
+                    @foreach (var bankAccount in Model.BankAccounts)
+                    {
+                        <option value="TransferFrom_@bankAccount.BankAccountId">Transfer from @bankAccount.Name</option>
+                    }
+
+                    @foreach (var category in Model.DepositTransactionCategories)
+                    {
+                        <option value="@category.BankAccountTransactionCategoryId">@category.Name</option>
+                    }
+                </select>
+                {{/if}}
+            </td>
+            <td>
+                <select class="form-control custom-select subCategorySelect" id="SubCategoryId_{{index}}" name="SubCategoryId_{{index}}">
+                    <option value="">Select One</option>
+                </select>
+            </td>
+            <td>
+                <input type="hidden" id="Amount_{{index}}" name="Amount_{{index}}" class="form-control" placeholder="Amount" value="{{transaction.amount}}">
+                {{transaction.amount}}
+            </td>
+        </tr>
+    </script>
+}
+
+<div class="row" id="processImportRow">
+    <div class="col-md-12">
+        <div class="card card-outline-info">
+            <div class="card-body">
+                <div class="form-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Bank Account</label>
+                                <select id="BankAccountId" name="BankAccountId" class="form-control custom-select" asp-items="Model.BankAccountSelectList"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Source Bank</label>
+                                <select id="BankImportSource" name="BankImportSource" class="form-control custom-select" asp-items="Model.BankImportSourceSelectList"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Import File</label>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input error" id="ImportFile" name="ImportFile">
+                                    <label class="custom-file-label" for="ImportFile" id="ImportFileLabel">Select a File</label>
+                                </div>
+                                <label id="ImportFile-error" class="error" style="display:none;"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions float-right">
+                    <button type="button" class="btn btn-primary" id="processImportButton"> <i class="fa fa-file-import"></i> Process Import</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form asp-controller="TransactionImport" asp-action="Import" method="post" id="transactionImportForm">
+    <input type="hidden" id="BankAccountId" name="BankAccountId" value="" />
+
+    <div class="row" id="importedTransactionsRow" style="display:none;">
+        <div class="col-md-12">
+            <div class="card card-outline-info">
+                <div class="card-body px-0 pt-0">
+                    <h5 class="card-title m-2" id="importTitle"></h5>
+                    <div class="table-responsive">
+                        <table id="transactionsTable" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th style="width:15px;">Save</th>
+                                    <th style="width:100px;">Date</th>
+                                    <th>Payee</th>
+                                    <th>Category</th>
+                                    <th>Sub Category</th>
+                                    <th style="width:125px;">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="form-actions float-right">
+                        <button type="submit" class="btn btn-primary" id="saveImport"> <i class="fa fa-check"></i> Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

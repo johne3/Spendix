@@ -1,6 +1,7 @@
 ﻿@model Spendix.Web.ViewModels.Category.CategoriesViewModel
 @{
     ViewData["Title"] = "Categories";
+    ViewData["PageHeader"] = "";
 
     var categoryNumber = 0;
 }
@@ -70,7 +71,7 @@
 }
 
 <form asp-controller="Category" asp-action="Categories" method="post">
-    <div class="row mb-4">
+    <div class="row mb-2">
         <div class="col-6">
             <h1 class="h4 mb-0 text-gray-800">Payment Categories</h1>
         </div>
