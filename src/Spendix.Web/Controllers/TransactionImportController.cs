@@ -112,13 +112,13 @@ namespace Spendix.Web.Controllers
                         TransactionType = TransactionTypes.TransferTo,
                         TransactionDate = DateTime.Parse(values[$"Date_{number}"]),
                         TransactionEnteredDateUtc = transactionEnteredDateUtc,
-                        Payee = null,
+                        Payee = values[$"Payee_{number}"],
                         Amount = decimal.Negate(decimal.Parse(values[$"Amount_{number}"])),
                         TransferFromBankAccountId = bankAccountId,
                         TransferFromBankAccount = bankAccount
                     };
 
-                    transaction.Payee = null;
+                    transaction.Payee = values[$"Payee_{number}"];
                     transaction.TransactionType = TransactionTypes.TransferFrom;
                     transaction.TransferToBankAccountId = transferToBankAccountId;
 
@@ -134,13 +134,13 @@ namespace Spendix.Web.Controllers
                         TransactionType = TransactionTypes.TransferFrom,
                         TransactionDate = DateTime.Parse(values[$"Date_{number}"]),
                         TransactionEnteredDateUtc = transactionEnteredDateUtc,
-                        Payee = null,
+                        Payee = values[$"Payee_{number}"],
                         Amount = decimal.Negate(decimal.Parse(values[$"Amount_{number}"])),
                         TransferFromBankAccountId = bankAccountId,
                         TransferToBankAccount = bankAccount
                     };
 
-                    transaction.Payee = null;
+                    transaction.Payee = values[$"Payee_{number}"];
                     transaction.TransactionType = TransactionTypes.TransferTo;
                     transaction.TransferFromBankAccountId = transferFromBankAccountId;
 

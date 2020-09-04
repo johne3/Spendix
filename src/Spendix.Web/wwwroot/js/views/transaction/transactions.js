@@ -47,8 +47,8 @@ function loadCategories() {
     var transactionType = $('#TransactionType').val();
 
     if (transactionType === 'Payment' || transactionType === 'Deposit') {
-        $('#transferRow').hide();
-        $('#paymentDepositRow').show();
+        $('.transferControls').hide();
+        $('.paymentDepositControls').show();
 
         $.get('/api/TransactionCategories/' + transactionType, function (data) {
             $('#Category').empty();
@@ -59,8 +59,8 @@ function loadCategories() {
             });
         });
     } else {
-        $('#paymentDepositRow').hide();
-        $('#transferRow').show();
+        $('.paymentDepositControls').hide();
+        $('.transferControls').show();
     }
 }
 
