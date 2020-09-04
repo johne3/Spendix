@@ -45,8 +45,14 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row" id="paymentDepositRow">
+                        <div class="row">
                             <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Payee</label>
+                                    <input type="text" id="Payee" name="Payee" class="form-control" placeholder="Payee" maxlength="200" value="@Model.SelectedBankAccountTransaction?.Payee" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="col-md-4 paymentDepositControls">
                                 <div class="form-group">
                                     <label class="control-label">Category</label>
                                     <select class="form-control custom-select" id="Category" name="Category"></select>
@@ -54,7 +60,7 @@
                                     <a asp-controller="Category" asp-action="Categories" class="float-right">edit categories</a>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-4 paymentDepositControls">
                                 <div class="form-group">
                                     <label class="control-label">Sub Category <small>(optional)</small></label>
                                     <select class="form-control custom-select" id="SubCategory" name="SubCategory">
@@ -64,15 +70,7 @@
                                     <a asp-controller="Category" asp-action="Categories" class="float-right">edit sub categories</a>
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label">Payee</label>
-                                    <input type="text" id="Payee" name="Payee" class="form-control" placeholder="Payee" maxlength="200" value="@Model.SelectedBankAccountTransaction?.Payee" autocomplete="off">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row" id="transferRow" style="display:none;">
-                            <div class="col-md-12">
+                            <div class="col-md-8 transferControls" style="display:none;">
                                 <div class="form-group">
                                     <label class="control-label">Bank Account</label>
                                     <select class="form-control custom-select" id="TransferBankAccountId" name="TransferBankAccountId" asp-items="Model.TransferToBankAccountsSelectList"></select>
@@ -109,6 +107,7 @@
                             {
                                 <tr>
                                     <td>@transactionBalance.transaction.TransactionDate.ToShortDateString()</td>
+                                    <td>@transactionBalance.transaction.Payee</td>
                                     <td>
                                         @if (transactionBalance.transaction.TransferToBankAccountId.HasValue)
                                         {
@@ -120,10 +119,9 @@
                                         }
                                         else
                                         {
-                                            @:@transactionBalance.transaction.Payee
-                                        }                                    
+                                            @:@transactionBalance.transaction.BankAccountTransactionCategory?.Name
+                                        }
                                     </td>
-                                    <td>@transactionBalance.transaction.BankAccountTransactionCategory?.Name</td>
                                     <td>@transactionBalance.transaction.BankAccountTransactionSubCategory?.Name</td>
                                     <td>@transactionBalance.transaction.Amount.FormatCurrency()</td>
                                     <td>@transactionBalance.balance.FormatCurrency()</td>

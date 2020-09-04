@@ -49,7 +49,6 @@ $(document).ready(function () {
         var categoryId = $(this).val();
 
         var subCategorySelect = $(this).parent().parent().find('.subCategorySelect');
-        var payeeTextBox = $(this).parent().parent().find('.payeeTextBox');
 
         subCategorySelect.empty();
         subCategorySelect.append('<option value="">Select One</option>');
@@ -57,34 +56,15 @@ $(document).ready(function () {
         if (categoryId.startsWith('TransferTo_') || categoryId.startsWith('TransferFrom_')) {
             subCategorySelect.attr('readonly', 'readonly');
             subCategorySelect.attr('disabled', 'disabled');
-
-            payeeTextBox.attr('readonly', 'readonly');
-            payeeTextBox.attr('disabled', 'disabled');
-
-            var text = $(this).find('option:selected').text();
-            payeeTextBox.val(text);
         } else {
             subCategorySelect.removeAttr('readonly');
             subCategorySelect.removeAttr('disabled');
-
-            payeeTextBox.removeAttr('readonly');
-            payeeTextBox.removeAttr('disabled');
-            payeeTextBox.val(payeeTextBox.data('originalValue'));
 
             $.get('/api/TransactionSubCategories/' + categoryId, function (data) {
                 $.each(data.subCategories, function (index, subCategory) {
                     subCategorySelect.append('<option value="' + subCategory.bankAccountTransactionSubCategoryId + '">' + subCategory.name + '</option>');
                 });
             });
-        }
-    });
-
-    $(document).on('blur', '.payeeTextBox', function () {
-        var val = $(this).val();
-        var originalVal = $(this).data('originalValue');
-
-        if (val !== originalVal) {
-            $(this).data('originalValue', val);
         }
     });
 });

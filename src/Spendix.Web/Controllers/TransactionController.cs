@@ -137,6 +137,7 @@ namespace Spendix.Web.Controllers
                 await PopulatePaymentOrDepositTransaction(bankAccountTransaction, values);
             }
 
+            bankAccountTransaction.Payee = values["Payee"];
             bankAccountTransaction.TransactionType = values["TransactionType"];
             bankAccountTransaction.TransactionDate = DateTime.Parse(values["Date"]);
             bankAccountTransaction.TransactionEnteredDateUtc = DateTime.UtcNow;
@@ -150,8 +151,6 @@ namespace Spendix.Web.Controllers
 
         private async Task PopulatePaymentOrDepositTransaction(BankAccountTransaction bankAccountTransaction, IFormCollection values)
         {
-            bankAccountTransaction.Payee = values["Payee"];
-
             var bankAccountTransactionCategory = await bankAccountTransactionCategoryRepo.FindByIdAsync(Guid.Parse(values["Category"]));
             bankAccountTransaction.BankAccountTransactionCategoryId = bankAccountTransactionCategory.BankAccountTransactionCategoryId;
 
@@ -186,6 +185,7 @@ namespace Spendix.Web.Controllers
                     BankAccountId = Guid.Parse(values["TransferBankAccountId"]),
                     TransactionType = TransactionTypes.TransferFrom,
                     TransactionDate = DateTime.Parse(values["Date"]),
+                    Payee = values["Payee"],
                     Amount = decimal.Parse(values["Amount"]),
                     TransactionEnteredDateUtc = DateTime.UtcNow,
                     TransferFromBankAccountId = bankAccount.BankAccountId
@@ -203,6 +203,7 @@ namespace Spendix.Web.Controllers
                     BankAccountId = Guid.Parse(values["TransferBankAccountId"]),
                     TransactionType = TransactionTypes.TransferTo,
                     TransactionDate = DateTime.Parse(values["Date"]),
+                    Payee = values["Payee"],
                     Amount = decimal.Parse(values["Amount"]),
                     TransactionEnteredDateUtc = DateTime.UtcNow,
                     TransferToBankAccountId = bankAccount.BankAccountId
