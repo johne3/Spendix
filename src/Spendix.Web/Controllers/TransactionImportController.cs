@@ -79,9 +79,7 @@ namespace Spendix.Web.Controllers
         {
             var bankAccountId = Guid.Parse(values["BankAccountId"]);
             var bankAccount = await bankAccountRepo.FindByIdAsync(bankAccountId);
-            var transactionNumbers = GetNumbersFromFormKeys("Date_", values);
-
-            var transactionEnteredDateUtc = DateTime.UtcNow;
+            var transactionNumbers = GetNumbersFromFormKeys("TransactionDateTime_", values);
 
             foreach (var number in transactionNumbers)
             {
@@ -90,11 +88,13 @@ namespace Spendix.Web.Controllers
                     continue;
                 }
 
+                var transactionEnteredDateUtc = DateTime.UtcNow;
+
                 var transaction = new BankAccountTransaction
                 {
                     BankAccountId = bankAccountId,
                     TransactionType = values[$"TransactionType_{number}"],
-                    TransactionDate = DateTime.Parse(values[$"Date_{number}"]),
+                    TransactionDateTime = DateTime.Parse(values[$"TransactionDateTime_{number}"]),
                     TransactionEnteredDateUtc = transactionEnteredDateUtc,
                     Payee = values[$"Payee_{number}"],
                     Amount = decimal.Parse(values[$"Amount_{number}"])
@@ -110,7 +110,7 @@ namespace Spendix.Web.Controllers
                     {
                         BankAccountId = transferToBankAccountId,
                         TransactionType = TransactionTypes.TransferTo,
-                        TransactionDate = DateTime.Parse(values[$"Date_{number}"]),
+                        TransactionDateTime = DateTime.Parse(values[$"TransactionDateTime_{number}"]),
                         TransactionEnteredDateUtc = transactionEnteredDateUtc,
                         Payee = values[$"Payee_{number}"],
                         Amount = decimal.Negate(decimal.Parse(values[$"Amount_{number}"])),
@@ -132,7 +132,7 @@ namespace Spendix.Web.Controllers
                     {
                         BankAccountId = transferFromBankAccountId,
                         TransactionType = TransactionTypes.TransferFrom,
-                        TransactionDate = DateTime.Parse(values[$"Date_{number}"]),
+                        TransactionDateTime = DateTime.Parse(values[$"TransactionDateTime_{number}"]),
                         TransactionEnteredDateUtc = transactionEnteredDateUtc,
                         Payee = values[$"Payee_{number}"],
                         Amount = decimal.Negate(decimal.Parse(values[$"Amount_{number}"])),
@@ -192,8 +192,6 @@ namespace Spendix.Web.Controllers
             var bankImportSource = values["BankImportSource"];
             var file = values.Files.First();
 
-            var userAccount = loggedInUserAccountAccessor.GetLoggedInUserAccount();
-
             List<ProcessImportResponseModel> transactions = null;
 
             if (string.Equals(bankImportSource, BankImportSources.AllyBank))
@@ -239,9 +237,13 @@ namespace Spendix.Web.Controllers
                         transactionType = TransactionTypes.Deposit;
                     }
 
+                    var transactionDate = DateTime.Parse(items[0]);
+                    transactionDate = transactionDate.Date + TimeSpan.Parse(items[1]);
+
                     models.Add(new ProcessImportResponseModel
                     {
-                        Date = DateTime.Parse(items[0]).ToShortDateString(),
+                        TransactionDateTime = transactionDate.ToString(),
+                        DisplayDate = transactionDate.ToShortDateString(),
                         Payee = items[4].Replace("\"", ""),
                         Amount = items[2],
                         TransactionType = transactionType,

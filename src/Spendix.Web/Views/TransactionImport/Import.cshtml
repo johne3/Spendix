@@ -24,9 +24,9 @@
                 <input type="checkbox" name="Save_{{index}}" id="Save_{{index}}" value="true" checked />
             </td>
             <td>
-                <input type="hidden" name="Date_{{index}}" id="Date_{{index}}" value="{{transaction.date}}" />
+                <input type="hidden" name="TransactionDateTime_{{index}}" id="TransactionDateTime_{{index}}" value="{{transaction.transactionDateTime}}" />
                 <input type="hidden" name="TransactionType_{{index}}" id="TransactionType_{{index}}" value="{{transaction.transactionType}}" />
-                {{transaction.date}}
+                {{transaction.displayDate}}
             </td>
             <td>
                 <input type="text" id="Payee_{{index}}" name="Payee_{{index}}" class="form-control payeeTextBox" placeholder="Payee" maxlength="200" autocomplete="off" value="{{transaction.payee}}">

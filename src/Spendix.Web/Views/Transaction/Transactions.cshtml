@@ -35,7 +35,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="control-label">Date</label>
-                                    <input type="text" id="Date" name="Date" class="form-control datepicker" placeholder="Date" value="@Model.SelectedBankAccountTransaction?.TransactionDate.ToShortDateString()" autocomplete="off">
+                                    <input type="text" id="Date" name="Date" class="form-control datepicker" placeholder="Date" value="@Model.SelectedBankAccountTransaction?.TransactionDateTime.ToShortDateString()" autocomplete="off">
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -106,7 +106,7 @@
                             @foreach (var transactionBalance in Model.TransactionBalances)
                             {
                                 <tr>
-                                    <td>@transactionBalance.transaction.TransactionDate.ToShortDateString()</td>
+                                    <td>@transactionBalance.transaction.TransactionDateTime.ToShortDateString()</td>
                                     <td>@transactionBalance.transaction.Payee</td>
                                     <td>
                                         @if (transactionBalance.transaction.TransferToBankAccountId.HasValue)

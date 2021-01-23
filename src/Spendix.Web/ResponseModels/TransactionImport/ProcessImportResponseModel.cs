@@ -7,7 +7,9 @@ namespace Spendix.Web.ResponseModels.TransactionImport
 {
     public class ProcessImportResponseModel
     {
-        public string Date { get; set; }
+        public string TransactionDateTime { get; set; }
+
+        public string DisplayDate { get; set; }
 
         public string Payee { get; set; }
 
