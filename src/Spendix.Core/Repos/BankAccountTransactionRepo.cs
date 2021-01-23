@@ -41,7 +41,7 @@ namespace Spendix.Core.Repos
             var q = from bat in DataContext.BankAccountTransactions
                     join ba in DataContext.BankAccounts on bat.BankAccountId equals ba.BankAccountId
                     where ba.UserAccountId == loggedInUserAccount.UserAccountId
-                    group bat by new { bat.TransactionDate.Month, bat.TransactionDate.Year } into g
+                    group bat by new { bat.TransactionDateTime.Month, bat.TransactionDateTime.Year } into g
                     select new
                     {
                         g.Key.Month,
@@ -62,8 +62,8 @@ namespace Spendix.Core.Repos
                     join batc in DataContext.BankAccountTransactionCategories on bat.BankAccountTransactionCategoryId equals batc.BankAccountTransactionCategoryId
                     where ba.UserAccountId == loggedInUserAccount.UserAccountId
                     && batc.TransactionType == TransactionTypes.Deposit
-                    && bat.TransactionDate >= startDate
-                    && bat.TransactionDate <= endDate
+                    && bat.TransactionDateTime >= startDate
+                    && bat.TransactionDateTime <= endDate
                     select bat;
 
             if (bankAccount != null)
@@ -83,8 +83,8 @@ namespace Spendix.Core.Repos
                     join batc in DataContext.BankAccountTransactionCategories on bat.BankAccountTransactionCategoryId equals batc.BankAccountTransactionCategoryId
                     where ba.UserAccountId == loggedInUserAccount.UserAccountId
                     && batc.TransactionType == TransactionTypes.Payment
-                    && bat.TransactionDate >= startDate
-                    && bat.TransactionDate <= endDate
+                    && bat.TransactionDateTime >= startDate
+                    && bat.TransactionDateTime <= endDate
                     select bat;
 
             if (bankAccount != null)
@@ -107,8 +107,8 @@ namespace Spendix.Core.Repos
                     where ba.UserAccountId == loggedInUserAccount.UserAccountId
                     && batc.TransactionType == TransactionTypes.Payment
                     && batc.IncludeInStatistics == true
-                    && bat.TransactionDate >= startDate
-                    && bat.TransactionDate <= endDate
+                    && bat.TransactionDateTime >= startDate
+                    && bat.TransactionDateTime <= endDate
                     select new
                     {
                         bat,

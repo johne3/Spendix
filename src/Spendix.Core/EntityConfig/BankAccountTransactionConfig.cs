@@ -23,7 +23,7 @@ namespace Spendix.Core.EntityConfig
             builder.Property(x => x.BankAccountTransactionCategoryId);
             builder.Property(x => x.BankAccountTransactionSubCategoryId);
             builder.Property(x => x.TransactionType).IsRequired().HasMaxLength(20);
-            builder.Property(x => x.TransactionDate).IsRequired();
+            builder.Property(x => x.TransactionDateTime).IsRequired();
             builder.Property(x => x.TransactionEnteredDateUtc).IsRequired();
             builder.Property(x => x.Payee).HasMaxLength(200).IsRequired();
             builder.Property(x => x.Amount).IsRequired();

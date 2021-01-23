@@ -16,7 +16,7 @@ namespace Spendix.Core.Entities
 
         public string TransactionType { get; set; }
 
-        public DateTime TransactionDate { get; set; }
+        public DateTime TransactionDateTime { get; set; }
 
         public DateTime TransactionEnteredDateUtc { get; set; }
 

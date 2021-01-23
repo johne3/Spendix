@@ -58,7 +58,7 @@ namespace Spendix.Web.Controllers
             }
 
             var transactions = (await bankAccountTransactionRepo.FindByBankAccountAsync(bankAccount))
-                .OrderBy(x => x.TransactionDate)
+                .OrderBy(x => x.TransactionDateTime)
                 .ThenBy(x => x.TransactionEnteredDateUtc)
                 .ToList();
 
@@ -77,7 +77,8 @@ namespace Spendix.Web.Controllers
                 TransactionTypeSelectList = new SelectList(transactionTypes),
                 BankAccount = bankAccount,
                 Transactions = transactions,
-                TransactionBalances = balances.OrderByDescending(x => x.transaction.TransactionDate).ThenByDescending(x => x.transaction.CreateDateUtc).ToList(),
+                TransactionBalances = balances.OrderByDescending(x => x.transaction.TransactionDateTime.Date)
+                                              .ThenByDescending(x => x.transaction.TransactionDateTime.TimeOfDay).ToList(),
                 TransferToBankAccountsSelectList = new SelectList(bankAccountsMinusCurrent, "BankAccountId", "Name")
             };
 
@@ -139,7 +140,7 @@ namespace Spendix.Web.Controllers
 
             bankAccountTransaction.Payee = values["Payee"];
             bankAccountTransaction.TransactionType = values["TransactionType"];
-            bankAccountTransaction.TransactionDate = DateTime.Parse(values["Date"]);
+            bankAccountTransaction.TransactionDateTime = DateTime.Parse(values["Date"]) + DateTime.UtcNow.TimeOfDay;
             bankAccountTransaction.TransactionEnteredDateUtc = DateTime.UtcNow;
 
             bankAccountTransactionRepo.PrepareEntityForCommit(bankAccountTransaction);
@@ -184,7 +185,7 @@ namespace Spendix.Web.Controllers
                 {
                     BankAccountId = Guid.Parse(values["TransferBankAccountId"]),
                     TransactionType = TransactionTypes.TransferFrom,
-                    TransactionDate = DateTime.Parse(values["Date"]),
+                    TransactionDateTime = DateTime.Parse(values["Date"]) + DateTime.UtcNow.TimeOfDay,
                     Payee = values["Payee"],
                     Amount = decimal.Parse(values["Amount"]),
                     TransactionEnteredDateUtc = DateTime.UtcNow,
@@ -202,7 +203,7 @@ namespace Spendix.Web.Controllers
                 {
                     BankAccountId = Guid.Parse(values["TransferBankAccountId"]),
                     TransactionType = TransactionTypes.TransferTo,
-                    TransactionDate = DateTime.Parse(values["Date"]),
+                    TransactionDateTime = DateTime.Parse(values["Date"]) + DateTime.UtcNow.TimeOfDay,
                     Payee = values["Payee"],
                     Amount = decimal.Parse(values["Amount"]),
                     TransactionEnteredDateUtc = DateTime.UtcNow,

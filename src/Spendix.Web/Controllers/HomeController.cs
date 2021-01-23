@@ -48,7 +48,7 @@ namespace Spendix.Web.Controllers
                 startDate = DateTime.Today.FirstDayOfMonth();
                 endDate = DateTime.Today.LastDayOfMonth();
             }
-            else if (string.Equals(range, "CurrentMonth", StringComparison.InvariantCultureIgnoreCase))
+            else if (string.Equals(range, "CurrentYear", StringComparison.InvariantCultureIgnoreCase))
             {
                 startDate = DateTime.Today.FirstDayOfYear();
                 endDate = DateTime.Today.LastDayOfYear();
