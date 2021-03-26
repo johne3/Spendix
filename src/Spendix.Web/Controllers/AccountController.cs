@@ -70,7 +70,7 @@ namespace Spendix.Web.Controllers
         }
 
         [HttpGet, Route("SignOut")]
-        public async Task<IActionResult> SignOut()
+        public new async Task<IActionResult> SignOut()
         {
             await HttpContext.SignOutAsync();
             return RedirectToAction("SignIn", "Account");
